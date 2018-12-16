@@ -64,6 +64,18 @@ kbastani/discovery-microservice        latest              bc7809bb1600        4
 kbastani/users-microservice            latest              ac3f5e3dc295        45 minutes ago      820MB
 ```
 
+Remove specific Image, here IMAGE ID = f17b6a61de28
+
+```
+$ docker rmi f17b6a61de28
+Untagged: ubuntu:14.04
+Untagged: ubuntu@sha256:f961d3d101e66017fc6f0a63ecc0ff15d3e7b53b6a0ac500cd1619ded4771bd6
+Deleted: sha256:f17b6a61de28594fb3ec53b1cca7164fba66357d1635b414eeed4d586744342e
+Deleted: sha256:62faa9fad606573b982c0444778746244947829aa8ebefbf29b3a5291875dc84
+Deleted: sha256:5848a5ca21d07333dbdf428bbdde15d5c7cecc7614b24562b49b205d8d20199a
+Deleted: sha256:cd509aa64a17350b03bf6af7f41d849fc273a0f2c9d1a309e897380617fca46e
+Deleted: sha256:960c7c5516b277c5c23644b2cfb53d0106543eace96d517141611fa34e1b957c
+```
 
 
 
