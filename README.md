@@ -156,7 +156,7 @@ e8d4af14ceb6        kbastani/config-microservice           "java -Djava.securitâ
 $ docker run -it --name temp ubuntu:latest /bin/bash
 root@4abe96b094af:/#
 ```
-
+Note - Press Ctrl + P + Q get out of this
 
 
 # Kill all running containers
