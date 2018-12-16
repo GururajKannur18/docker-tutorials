@@ -15,6 +15,18 @@ $ docker-compose --version
 docker-compose version 1.20.1, build 5d8c71b2
 ```
 
+docker pull command will search for alpine into docker hub and pull it.
+
+```
+$ docker pull alpine
+Using default tag: latest
+latest: Pulling from library/alpine
+4fe2ade4980c: Pull complete
+Digest: sha256:621c2f39f8133acb8e64023a94dbdf0d5ca81896102b9e57c0dc184cadaf5528
+Status: Downloaded newer image for alpine:latest
+```
+NOTE: Images will get pulled from docker hub in layers. 
+
 ```
 $ docker images
 REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
