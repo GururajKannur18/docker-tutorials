@@ -77,6 +77,28 @@ Deleted: sha256:cd509aa64a17350b03bf6af7f41d849fc273a0f2c9d1a309e897380617fca46e
 Deleted: sha256:960c7c5516b277c5c23644b2cfb53d0106543eace96d517141611fa34e1b957c
 ```
 
+```
+$ docker ps -a
+CONTAINER ID        IMAGE                                  COMMAND                  CREATED             STATUS                        PORTS               NAMES
+e91cd8fbe0da        kbastani/hystrix-dashboard             "java -Djava.securit…"   About an hour ago   Exited (137) 31 minutes ago                       docker_hystrix_1
+7368e0d8fc42        kbastani/api-gateway-microservice      "java -Djava.securit…"   About an hour ago   Exited (143) 31 minutes ago                       docker_gateway_1
+f3cf5171ef33        kbastani/movies-ui                     "java -Djava.securit…"   About an hour ago   Exited (143) 31 minutes ago                       docker_moviesui_1
+10ad4716e9b7        kbastani/movie-microservice            "java -Djava.securit…"   About an hour ago   Exited (1) 39 minutes ago                         docker_movie_1
+f78f4df9206f        kbastani/users-microservice            "java -Djava.securit…"   About an hour ago   Exited (1) 39 minutes ago                         docker_user_1
+fac92c7a4c26        kbastani/recommendation-microservice   "java -Djava.securit…"   About an hour ago   Exited (1) 39 minutes ago                         docker_recommendation_1
+e8d4af14ceb6        kbastani/config-microservice           "java -Djava.securit…"   About an hour ago   Exited (143) 31 minutes ago                       docker_configserver_1
+6a5223a4b1d1        kbastani/discovery-microservice        "java -Djava.securit…"   About an hour ago   Exited (143) 31 minutes ago                       docker_discovery_1
+```
+
+
+
+
+
+
+
+
+
+
 
 
 ```
