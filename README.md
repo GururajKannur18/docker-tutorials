@@ -107,8 +107,20 @@ e8d4af14ceb6        kbastani/config-microservice           "java -Djava.securitâ
 6a5223a4b1d1        kbastani/discovery-microservice        "java -Djava.securitâ€¦"   About an hour ago   Exited (143) 31 minutes ago                       docker_discovery_1
 ```
 
+# Kill all running containers
 
+```
+docker kill $(docker ps -q)
+```
 
+# delete all stop containers
+```
+docker rmi $(docker ps -a -q)
+```
+# delete all images
+```
+docker rmi $(docker images -q)
+```
 
 
 
