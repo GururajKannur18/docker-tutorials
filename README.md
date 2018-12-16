@@ -150,6 +150,15 @@ e8d4af14ceb6        kbastani/config-microservice           "java -Djava.securitâ
 6a5223a4b1d1        kbastani/discovery-microservice        "java -Djava.securitâ€¦"   About an hour ago   Exited (143) 31 minutes ago                       docker_discovery_1
 ```
 
+# This is very cool
+(Note: Make sure ubuntu latest image present in docker container)
+```
+$ docker run -it --name temp ubuntu:latest /bin/bash
+root@4abe96b094af:/#
+```
+
+
+
 # Kill all running containers
 
 ```
