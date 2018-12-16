@@ -176,8 +176,26 @@ docker rmi $(docker ps -a -q)
 docker rmi $(docker images -q)
 ```
 
+# Setup Redis
+```
+$ docker pull redis
+Using default tag: latest
+latest: Pulling from library/redis
+a5a6f2f73cd8: Pull complete
+a6d0f7688756: Pull complete
+53e16f6135a5: Pull complete
+f52b0cc4e76a: Pull complete
+e841feee049e: Pull complete
+ccf45e5191d0: Pull complete
+Digest: sha256:010a8bd5c6a9d469441aa35187d18c181e3195368bce309348b3ee639fce96e0
+Status: Downloaded newer image for redis:latest
 
+$ docker run --name some-redis -d redis
+9c309a278d2f2ddafc5b9f355dde74055781619d7323ea8f3125106faaff32c2
 
+$ docker exec -it some-redis redis-cli
+127.0.0.1:6379>
+```
 
 
 
