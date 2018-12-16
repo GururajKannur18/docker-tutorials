@@ -1,19 +1,25 @@
 # docker useful commands
 
+```
 $ docker-machine ip
 192.168.99.100
+```
 
+```
 $ docker --version
 Docker version 18.03.0-ce, build 0520e24302
+```
 
+```
 $ docker-compose --version
 docker-compose version 1.20.1, build 5d8c71b2
+```
 
 
 
 
 
-
+```
 $ docker info
 Containers: 8
  Running: 0
@@ -61,3 +67,4 @@ Experimental: false
 Insecure Registries:
  127.0.0.0/8
 Live Restore Enabled: false
+```
