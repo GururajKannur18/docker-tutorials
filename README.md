@@ -50,6 +50,7 @@ Digest: sha256:f961d3d101e66017fc6f0a63ecc0ff15d3e7b53b6a0ac500cd1619ded4771bd6
 Status: Downloaded newer image for ubuntu:14.04
 ```
 
+# List Docker Images
 ```
 $ docker images
 REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
@@ -64,7 +65,7 @@ kbastani/discovery-microservice        latest              bc7809bb1600        4
 kbastani/users-microservice            latest              ac3f5e3dc295        45 minutes ago      820MB
 ```
 
-Remove specific Image, here IMAGE ID = f17b6a61de28
+# Remove specific Image, here IMAGE ID = f17b6a61de28
 
 ```
 $ docker rmi f17b6a61de28
@@ -76,6 +77,22 @@ Deleted: sha256:5848a5ca21d07333dbdf428bbdde15d5c7cecc7614b24562b49b205d8d20199a
 Deleted: sha256:cd509aa64a17350b03bf6af7f41d849fc273a0f2c9d1a309e897380617fca46e
 Deleted: sha256:960c7c5516b277c5c23644b2cfb53d0106543eace96d517141611fa34e1b957c
 ```
+
+# Remove Docker Images
+
+- docker rmi <IMAGE ID>
+- docker rmi <IMAGE ID1> <IMAGE ID2>
+- docker rmi $(docker images -f "dangling=true" -q)
+
+-quite, -q ==> Only shows numeric Ids
+-filter, -f ==> filter output based on condition provided. 
+
+-a, -all => Shows all containers (default shows just running).
+-q => Only displays numeric Ids.
+
+- docker images prune
+- Removes dangling images (images which are not used by any containers)
+
 
 ```
 $ docker ps -a
