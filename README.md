@@ -236,3 +236,32 @@ Live Restore Enabled: false
 
 
 # Docker Swarm
+
+# Containers Vs VM
+
+Docker containers are just isolated system environment run with the same kernel as host.
+
+# Docker Objects
+1) Images - Like VM, container image is template for containers. They consist mostly of file system, but also metadata about the container including how we should operate by default.
+
+- sharing image using docker commands
+- Docker manages images on host gives you the tools to transport them across host. Usually by registries.
+
+2) Containers - are instances of images, basically copies then isolated process inside them. To the process it looks as if it has own system based on the file system of image. They can change the file system but any changes have to be committed back to an image to persist.
+
+- Docker manages images like processes - meaning you can start, stop and run in the background, run interactively etc..
+
+3) Dockerfiles - are build files that instructs docker how to consistently configure container images.
+
+4) Registries - serve images you can pull from & push into from docker. Docker index is considered main public registry. 
+
+Layered - Copy on Write Filesystem
+- Content Layer
+- init layer
+
+uses layer copy on write FS (File System) i.e., file you see on container when it start are actually file images in the system until changes are made.
+
+Changes made in the container are collectively make up a layer & can be committed to an image. Images are just collection of layers on file system changes. This allows docker efficient with the disk space, also registries are important. Since they're aware about layers and cannot send layers, you dont have when you pull in images.
+
+Containers are not just file systems, they run using commands. This command run in process isolation using namespace and 'C' groups.
+
