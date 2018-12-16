@@ -15,6 +15,19 @@ $ docker-compose --version
 docker-compose version 1.20.1, build 5d8c71b2
 ```
 
+```
+$ docker images
+REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
+kbastani/movies-ui                     latest              0a107de3a95e        40 minutes ago      761MB
+kbastani/movie-microservice            latest              31ca109da9fa        41 minutes ago      819MB
+kbastani/consul-microservice           latest              9e0b6f419feb        41 minutes ago      723MB
+kbastani/hystrix-dashboard             latest              cb65337bc385        42 minutes ago      696MB
+kbastani/config-microservice           latest              e706a42dfb09        43 minutes ago      724MB
+kbastani/recommendation-microservice   latest              51cede9d96de        43 minutes ago      819MB
+kbastani/api-gateway-microservice      latest              1056ed563cba        44 minutes ago      716MB
+kbastani/discovery-microservice        latest              bc7809bb1600        44 minutes ago      726MB
+kbastani/users-microservice            latest              ac3f5e3dc295        45 minutes ago      820MB
+```
 
 
 
