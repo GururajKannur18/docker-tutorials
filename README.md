@@ -37,6 +37,19 @@ Digest: sha256:c1ff613e8ba25833d2e1940da0940c3824f03f802c449f3d1815a66b7f8c0e9d
 Status: Image is up to date for java:8
 ```
 
+If I want to pull specific/particular image
+
+```
+$ docker pull ubuntu:14.04
+14.04: Pulling from library/ubuntu
+aa1a66b8583a: Pull complete
+aaccc2e362b2: Pull complete
+a53116a2808f: Pull complete
+b3a7298e318c: Pull complete
+Digest: sha256:f961d3d101e66017fc6f0a63ecc0ff15d3e7b53b6a0ac500cd1619ded4771bd6
+Status: Downloaded newer image for ubuntu:14.04
+```
+
 ```
 $ docker images
 REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
