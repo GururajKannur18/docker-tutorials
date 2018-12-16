@@ -93,7 +93,7 @@ Deleted: sha256:960c7c5516b277c5c23644b2cfb53d0106543eace96d517141611fa34e1b957c
 - docker images prune
 - Removes dangling images (images which are not used by any containers)
 
-
+# List running containers
 ```
 $ docker ps -a
 CONTAINER ID        IMAGE                                  COMMAND                  CREATED             STATUS                        PORTS               NAMES
@@ -117,7 +117,9 @@ docker kill $(docker ps -q)
 ```
 docker rmi $(docker ps -a -q)
 ```
+
 # delete all images
+(Note: This will delete all layers of images)
 ```
 docker rmi $(docker images -q)
 ```
