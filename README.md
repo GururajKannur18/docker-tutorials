@@ -27,6 +27,16 @@ Status: Downloaded newer image for alpine:latest
 ```
 NOTE: Images will get pulled from docker hub in layers. 
 
+
+Download/fetch the Java8
+
+```
+$ docker pull java:8
+8: Pulling from library/java
+Digest: sha256:c1ff613e8ba25833d2e1940da0940c3824f03f802c449f3d1815a66b7f8c0e9d
+Status: Image is up to date for java:8
+```
+
 ```
 $ docker images
 REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
