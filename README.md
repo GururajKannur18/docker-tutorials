@@ -108,6 +108,24 @@ Deleted: sha256:cd509aa64a17350b03bf6af7f41d849fc273a0f2c9d1a309e897380617fca46e
 Deleted: sha256:960c7c5516b277c5c23644b2cfb53d0106543eace96d517141611fa34e1b957c
 ```
 
+```
+docker run -d -P seqvence/static-site
+Unable to find image 'seqvence/static-site:latest' locally
+latest: Pulling from seqvence/static-site
+
+fdd5d7827f33: Downloading [=======>                                           ] 7.318 MB/51.37 MB
+fdd5d7827f33: Pull complete
+a3ed95caeb02: Pull complete
+716f7a5f3082: Pull complete
+7b10f03a0309: Pull complete
+aff3ab7e9c39: Pull complete
+Digest: sha256:41b286105f913fb7a5fbdce28d48bc80f1c77e3c4ce1b8280f28129ae0e94e9e
+Status: Downloaded newer image for seqvence/static-site:latest
+e9da3f71a2065765e6a8e11cb85f6d4c8ed1868d75e77f58459558f840157f47
+
+```
+
+
 # Remove specific Image, here IMAGE ID = f17b6a61de28
 
 ```
