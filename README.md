@@ -124,6 +124,18 @@ Status: Downloaded newer image for seqvence/static-site:latest
 e9da3f71a2065765e6a8e11cb85f6d4c8ed1868d75e77f58459558f840157f47
 
 ```
+```
+docker ps
+CONTAINER ID        IMAGE                  COMMAND                  CREATED              STATUS              PORTS                                           NAMES
+e9da3f71a206        seqvence/static-site   "/bin/sh -c 'cd /usr/"   About a minute ago   Up About a minute   0.0.0.0:32769->80/tcp, 0.0.0.0:32768->443/tcp   focused_noyce
+
+```
+
+```
+http://ech-10-157-136-3:32769/
+```
+
+-------------------------------------------------------------------------------------------------------------------------------
 
 
 # Remove specific Image, here IMAGE ID = f17b6a61de28
