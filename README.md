@@ -49,7 +49,7 @@ To generate this message, Docker took the following steps:
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
 
-To try something more ambitious, you can run an Ubuntu container with:
+To try something more ambitious, you can run an Ubuntu container with: Here -t -> Terminal, -i -> interactive
  $ docker run -it ubuntu bash
 
 Share images, automate workflows, and more with a free Docker ID:
