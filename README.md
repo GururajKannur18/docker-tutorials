@@ -872,3 +872,35 @@ Howdy World!
 docker container run hellojava:3
 Hello World!
 ```
+
+# Other Docker instructions
+
+# RUN and CMD
+- RUN: used for installing software package
+	RUN apt-get update && apt-get install -y git
+	RUN /opt/jboss/wildfly/bin/add-user.sh admin Admin#007 -silent
+	
+- CMD: defaults for executing container; can be overriden from CLI 
+	CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+	docker run mywildfly bash
+	
+- ENTRYPOINT: configures the container executable; can be overridden using --entrypoint from CLI
+	Default value: /bin/sh -c
+	ENTRYPOINT ["/entrypoint.sh"]
+	
+# Expose and Volume
+
+- EXPOSE: network ports on which the container is listening 
+For ex: EXPOSE 9990
+Need to explicily publish the host port 
+
+- VOLUME: creates a mount point with the specified name
+	VOLUME /opt/couchbase/var 
+	docker container run ... -v ~/data:/opt/couchbase/var
+	
+	
+# USER and HEALTHCHECK
+- USER : sets the user name or UID to use when running the image 
+
+- HEALTHCHECK: performs a healthcheck on the application inside the container
+	HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:8091/pools || exit 1
