@@ -654,6 +654,14 @@ http://10.157.136.3:8080/webapp/resources/persons
 # Create your first java docker image
 Note: -t - tags
       . means build context 
+      
+Dockerfile
+```
+FROM openjdk:jdk-alpine
+
+CMD java -version
+```
+
 
 ```
 docker image build -t hellojava .
