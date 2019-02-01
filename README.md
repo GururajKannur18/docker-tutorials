@@ -557,6 +557,7 @@ web
 ```
 
 # If I want to run the shell in the container:
+Note: -it -> Interactive way we can see logs on the shell...but -d (detached mode), we can see only long id.
 ```
 [dc-user@ech-10-157-136-3 ~]$ docker container run -it --name web jboss/wildfly bash
 [jboss@e5226e05529f ~]$ ls
