@@ -649,3 +649,81 @@ curl http://localhost:8080/webapp/resources/persons
 ```
 http://10.157.136.3:8080/webapp/resources/persons
 ```
+
+
+# Create your first java docker image
+Note: -t - tags
+      . means build context 
+
+```
+docker image build -t hellojava .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk
+latest: Pulling from library/openjdk
+ab1fc7e4bf91: Pull complete
+35fba333ff52: Pull complete
+f0cb1fa13079: Pull complete
+3d1dd648b5ad: Pull complete
+a9f886e483d6: Pull complete
+f0c295b9cf6e: Pull complete
+afe560095725: Pull complete
+dc8253cd29cd: Pull complete
+6885295983c8: Pull complete
+Digest: sha256:761a6053925601d420754753cfce5b5527478991f30ae21a49cfac019323935d
+Status: Downloaded newer image for openjdk:latest
+ ---> 2cbfaac94298
+Step 2/2 : CMD java -version
+ ---> Running in c892a4ce2a8e
+ ---> 920a2b72ca8a
+Removing intermediate container c892a4ce2a8e
+Successfully built 920a2b72ca8a
+Successfully tagged hellojava:latest
+```
+
+```
+docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           latest              0bf7bff6fed1        18 seconds ago      821MB
+openjdk             latest              2cbfaac94298        9 days ago          821MB
+```
+```
+docker container run hellojava
+openjdk version "11.0.1" 2018-10-16
+OpenJDK Runtime Environment (build 11.0.1+13-Debian-2bpo91)
+OpenJDK 64-Bit Server VM (build 11.0.1+13-Debian-2bpo91, mixed mode, sharing)
+```
+
+```
+docker image build -t hellojava:2 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk:jdk-alpine
+jdk-alpine: Pulling from library/openjdk
+8e3ba11ec2a2: Pull complete
+311ad0da4533: Pull complete
+df312c74ce16: Pull complete
+Digest: sha256:1fd5a77d82536c88486e526da26ae79b6cd8a14006eb3da3a25eb8d2d682ccd6
+Status: Downloaded newer image for openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/2 : CMD java -version
+ ---> Running in 865e514a63ad
+ ---> 5e0a037757fb
+Removing intermediate container 865e514a63ad
+Successfully built 5e0a037757fb
+Successfully tagged hellojava:2
+```
+
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           2                   5e0a037757fb        19 seconds ago      103MB
+hellojava           latest              0bf7bff6fed1        5 minutes ago       821MB
+openjdk             latest              2cbfaac94298        9 days ago          821MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+```
+```
+docker container run hellojava:2
+openjdk version "1.8.0_171"
+OpenJDK Runtime Environment (IcedTea 3.8.0) (Alpine 8.171.11-r0)
+OpenJDK 64-Bit Server VM (build 25.171-b11, mixed mode)
+```
+
