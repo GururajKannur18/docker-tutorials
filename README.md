@@ -536,3 +536,47 @@ e7d9e3713f5c        93fd78260bd1                           "/bin/bash"          
 50e4e8c9923f        ec347d11e305                           "echo 'Hello O'Rei..."   2 months ago        Exited (0) 2 months ago                             boring_bartik
 6f2025730fff        c54a2cc56cbb                           "/hello"                 2 years ago         Exited (0) 2 years ago                              amazing_lumiere
 ```
+
+
+# assign the name relevant to my application
+```
+docker container run -d --name web jboss/wildfly
+2019f12e23c71d5076eea22e3ee79d4655be47d0a7b8c046bc6b0ae6340dc96d
+```
+
+```
+docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+2019f12e23c7        jboss/wildfly       "/opt/jboss/wildfl..."   18 seconds ago      Up 16 seconds       8080/tcp            web
+```
+
+# Stop the container and remove it (single command -f --> stops and removes)
+```
+docker container rm -f web
+web
+```
+
+# If I want to run the shell in the container:
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container run -it --name web jboss/wildfly bash
+[jboss@e5226e05529f ~]$ ls
+wildfly
+[jboss@e5226e05529f ~]$ cd wildfly/
+[jboss@e5226e05529f wildfly]$ pwd
+/opt/jboss/wildfly
+[jboss@e5226e05529f wildfly]$ ls
+LICENSE.txt  README.txt  appclient  bin  copyright.txt  docs  domain  jboss-modules.jar  modules  standalone  welcome-content
+[jboss@e5226e05529f wildfly]$ cd standalone/
+[jboss@e5226e05529f standalone]$ ls -la
+total 8
+drwxrwxr-x  6 jboss root   64 Jan  5 19:10 .
+drwxrwxr-x 12 jboss root 4096 Jan  5 19:10 ..
+drwxrwxr-x  2 jboss root 4096 Jan 11 09:19 configuration
+drwxrwxr-x  2 jboss root   23 Jan 11 09:19 deployments
+drwxrwxr-x  3 jboss root   16 Jan  5 19:10 lib
+drwxrwxr-x  3 jboss root   17 Jan  5 19:10 tmp
+[jboss@e5226e05529f standalone]$ exit
+exit
+[dc-user@ech-10-157-136-3 ~]$
+```
+
