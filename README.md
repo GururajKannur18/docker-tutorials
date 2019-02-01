@@ -313,6 +313,7 @@ Changes made in the container are collectively make up a layer & can be committe
 
 Containers are not just file systems, they run using commands. This command run in process isolation using namespace and 'C' groups.
 
+```
 [dc-user@ech-10-157-136-3 ~]$ docker run -it ubuntu:latest bash
 Unable to find image 'ubuntu:latest' locally
 latest: Pulling from library/ubuntu
@@ -332,38 +333,49 @@ DISTRIB_DESCRIPTION="Ubuntu 18.04.1 LTS"
 root@25f13c4f1816:/#
 root@25f13c4f1816:/# exit
 exit
+```
 
+```
 [dc-user@ech-10-157-136-3 ~]$ docker ps -l --format=$FORMAT
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
 6a66709a8a05        ubuntu:latest       "bash"              4 minutes ago       Exited (0) 24 seconds ago                       clever_davinci
+```
 
-
+```
 [dc-user@ech-10-157-136-3 ~]$ docker ps
 CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES
 e9da3f71a206        seqvence/static-site   "/bin/sh -c 'cd /usr/"   6 weeks ago         Up 6 weeks          0.0.0.0:32769->80/tcp, 0.0.0.0:32768->443/tcp   focused_noyce
+```
 
 create the file 
 touch MY_FILE
 
+```
 [dc-user@ech-10-157-136-3 ~]$ docker commit a25b4e978628
 sha256:d55cf549af410b694697f812829d5cf41fbf32bf5f410c5babe9df86686270a2
+```
 
-
+```
 [dc-user@ech-10-157-136-3 ~]$ docker images
 REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
 my-new-image                           latest              d55cf549af41        2 minutes ago       87.47 MB
 ubuntu                                 latest              20bb25d32758        8 days ago          87.47 MB
 [dc-user@ech-10-157-136-3 ~]$
+```
 
+```
 docker run -ti my-new-image bash
 root@b2845052a960:/# ls
 MY_FILE  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 root@b2845052a960:/#
+```
 
+```
 [dc-user@ech-10-157-136-3 ~]$ docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
 
-
+```
 [dc-user@ech-10-157-136-3 ~]$ DOCKER_HIDE_LEGACY_COMMANDS=true docker --help
 
 Usage:  docker COMMAND
@@ -406,6 +418,7 @@ Commands:
 
 Run 'docker COMMAND --help' for more information on a command.
 [dc-user@ech-10-157-136-3 ~]$
+```
 
 ```
 [dc-user@ech-10-157-136-3 ~]$ docker container --help
