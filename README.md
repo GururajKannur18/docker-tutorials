@@ -909,3 +909,20 @@ Need to explicily publish the host port
 
 ``docker-java-sample`` - download this from https://github.com/arun-gupta/docker-java-sample
 
+
+# Docker and Maven 
+- Packaging and running the java application exclusively with Docker requires hard coding 
+- Typical java workflow includes Maven and other tools
+- Maven plugins available for Docker
+
+```
+mvn package -Pdocker
+```
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           latest              006b6c0ea07b        11 seconds ago      821MB
+```
+```
+mvn install -Pdocker
+```
