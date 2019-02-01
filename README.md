@@ -785,3 +785,90 @@ d65f1c6b7982        helloweb            "/opt/jboss/wildfl..."   About a minute 
 curl http://localhost:8080/webapp/resources/persons
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
 ```
+
+# Run JAR files from the docker
+
+Goto the chapter2, create Dockerfile
+
+```
+FROM openjdk:jdk-alpine
+
+COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+
+CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+```
+
+Now, go to the myapp directory and  >mvn clean install -DskipTests
+Note: Make sure the myapp-1.0-SNAPSHOT.jar is created there.
+
+```
+docker build -t hellojava:3 .
+Sending build context to Docker daemon   55.3kB
+Step 1/3 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/3 : COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+ ---> 6ab779dff505
+Removing intermediate container c505ed53daae
+Step 3/3 : CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+ ---> Running in 0f4c47edb022
+ ---> 841cbd40188d
+Removing intermediate container 0f4c47edb022
+Successfully built 841cbd40188d
+Successfully tagged hellojava:3
+```
+
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           3                   841cbd40188d        2 minutes ago       103MB
+helloweb            latest              6ab53ec1a8c9        14 minutes ago      675MB
+hellojava           2                   5e0a037757fb        40 minutes ago      103MB
+hellojava           latest              0bf7bff6fed1        45 minutes ago      821MB
+openjdk             latest              2cbfaac94298        9 days ago          821MB
+jboss/wildfly       latest              2602b4852593        3 weeks ago         675MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+```
+
+docker container run hellojava:3
+Hello World!
+
+
+# How to repacage and rebuild the application??
+Change the syso statement, build the maven project using >mvn clean install -DskipTests and again package the image
+
+```
+docker build -t hellojava:4 .
+Sending build context to Docker daemon   55.3kB
+Step 1/3 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/3 : COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+ ---> b315a06e9573
+Removing intermediate container bdeaa1c29b26
+Step 3/3 : CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+ ---> Running in 90ee32aff31c
+ ---> b494d9535490
+Removing intermediate container 90ee32aff31c
+Successfully built b494d9535490
+Successfully tagged hellojava:4
+```
+
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           4                   b494d9535490        28 seconds ago      103MB
+hellojava           3                   841cbd40188d        7 minutes ago       103MB
+helloweb            latest              6ab53ec1a8c9        19 minutes ago      675MB
+hellojava           2                   5e0a037757fb        45 minutes ago      103MB
+hellojava           latest              0bf7bff6fed1        About an hour ago   821MB
+openjdk             latest              2cbfaac94298        9 days ago          821MB
+jboss/wildfly       latest              2602b4852593        3 weeks ago         675MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+```
+
+```
+docker container run hellojava:4
+Howdy World!
+
+docker container run hellojava:3
+Hello World!
+```
