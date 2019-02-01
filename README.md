@@ -581,3 +581,71 @@ exit
 [dc-user@ech-10-157-136-3 ~]$
 ```
 
+# Run container(ports and volumes)
+Note: -P which says take all exposed ports & published them in pre-defined range 
+	  -p take port 8080 on the host and map it to port
+
+```
+docker container run -d --name web -P jboss/wildfly
+ea9ac53dcc4f8b33b859fe8a99b49722a97496a5f8bdee728c89ddf4a8120735
+```
+
+```
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                     NAMES
+ea9ac53dcc4f        jboss/wildfly       "/opt/jboss/wildfl..."   36 seconds ago      Up 35 seconds       0.0.0.0:32768->8080/tcp   web
+```
+
+Note - ``0.0.0.0:32768->8080/tcp``, take all the network interfaces on the host which is indicated by 0.0.0.0 port 32768 over there and reidirect it to port 8080 in the container
+
+Access the link: http://10.157.136.3:32768/
+
+# If I want to see the logs of docker container
+```
+docker container logs web
+```
+
+```
+# stop the docker container
+docker container stop web
+web
+```
+
+```
+# Remove container 
+docker container rm web
+web
+```
+
+```
+docker container run -d --name web -p 8080:8080 jboss/wildfly
+```
+
+Now, access the link: http://10.157.136.3:8080/
+
+Note: Go to the location where sample.war file present and then execute the following commands:
+
+```
+docker container run -d --name web -p 8080:8080 -v `pwd`/webapp.war:/opt/jboss/wildfly/standalone/deployments/webapp.war jboss/wildfly
+c4bd4393b395f336a4a5e544b9c5ac29628c6953a5d18f6d3084eda91f581501
+```
+
+# see the logs
+```
+docker container logs web
+```
+
+# we can also tail the logs:
+```
+docker container logs web -f 
+```
+
+```
+curl http://localhost:8080/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+```
+
+# From Browser:
+```
+http://10.157.136.3:8080/webapp/resources/persons
+```
