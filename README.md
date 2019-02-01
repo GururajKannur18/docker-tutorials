@@ -735,3 +735,53 @@ OpenJDK Runtime Environment (IcedTea 3.8.0) (Alpine 8.171.11-r0)
 OpenJDK 64-Bit Server VM (build 25.171-b11, mixed mode)
 ```
 
+# Copy Files in the docker image
+
+- COPY instructions: Copy new files or directories to the container filesystem
+- ADD instructions: 
+	COPY instructions
+	Allow tar file auto-extraction in the image
+	- For ex: ADD app.tar.gz /opt/var/myapp
+	Can download files from remote URL
+	- Recommanded to use CURL or wget instead
+	
+Dockerfile
+```
+FROM jboss/wildfly
+
+COPY webapp.war /opt/jboss/wildfly/standalone/deployments/webapp.war
+```
+
+```	
+docker image build -t helloweb .
+Sending build context to Docker daemon  9.216kB
+Step 1/2 : FROM jboss/wildfly
+latest: Pulling from jboss/wildfly
+aeb7866da422: Pull complete
+157601a0b538: Pull complete
+642f4164f381: Pull complete
+bda512e97517: Pull complete
+4cccaafdae21: Pull complete
+Digest: sha256:310dabba2d67c98a22fd8f2e51fcb8575d3071737159a75e7edd5182b505dfff
+Status: Downloaded newer image for jboss/wildfly:latest
+ ---> 2602b4852593
+Step 2/2 : COPY webapp.war /opt/jboss/wildfly/standalone/deployments/webapp.war
+ ---> 6ab53ec1a8c9
+Removing intermediate container cdfc09926e98
+Successfully built 6ab53ec1a8c9
+Successfully tagged helloweb:latest
+```
+```
+docker container run -p 8080:8080 -d helloweb
+d65f1c6b79828c17fbe2a720259d0b4708bae10aad97b715941f5d26ddfc7026
+```
+```
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                    NAMES
+d65f1c6b7982        helloweb            "/opt/jboss/wildfl..."   About a minute ago   Up About a minute   0.0.0.0:8080->8080/tcp   determined_easley
+```
+
+```
+curl http://localhost:8080/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+```
