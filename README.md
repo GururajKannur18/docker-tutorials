@@ -904,3 +904,8 @@ Need to explicily publish the host port
 
 - HEALTHCHECK: performs a healthcheck on the application inside the container
 	HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:8091/pools || exit 1
+
+------------------------------------------------------
+
+``docker-java-sample`` - download this from https://github.com/arun-gupta/docker-java-sample
+
