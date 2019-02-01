@@ -313,3 +313,213 @@ Changes made in the container are collectively make up a layer & can be committe
 
 Containers are not just file systems, they run using commands. This command run in process isolation using namespace and 'C' groups.
 
+[dc-user@ech-10-157-136-3 ~]$ docker run -it ubuntu:latest bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+
+38e2e6cd5626: Pull complete
+705054bc3f5b: Pull complete
+c7051e069564: Pull complete
+7308e914506c: Pull complete
+Digest: sha256:945039273a7b927869a07b375dc3148de16865de44dec8398672977e050a072e
+Status: Downloaded newer image for ubuntu:latest
+
+root@25f13c4f1816:/# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.1 LTS"
+root@25f13c4f1816:/#
+root@25f13c4f1816:/# exit
+exit
+
+[dc-user@ech-10-157-136-3 ~]$ docker ps -l --format=$FORMAT
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+6a66709a8a05        ubuntu:latest       "bash"              4 minutes ago       Exited (0) 24 seconds ago                       clever_davinci
+
+
+[dc-user@ech-10-157-136-3 ~]$ docker ps
+CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES
+e9da3f71a206        seqvence/static-site   "/bin/sh -c 'cd /usr/"   6 weeks ago         Up 6 weeks          0.0.0.0:32769->80/tcp, 0.0.0.0:32768->443/tcp   focused_noyce
+
+create the file 
+touch MY_FILE
+
+[dc-user@ech-10-157-136-3 ~]$ docker commit a25b4e978628
+sha256:d55cf549af410b694697f812829d5cf41fbf32bf5f410c5babe9df86686270a2
+
+
+[dc-user@ech-10-157-136-3 ~]$ docker images
+REPOSITORY                             TAG                 IMAGE ID            CREATED             SIZE
+my-new-image                           latest              d55cf549af41        2 minutes ago       87.47 MB
+ubuntu                                 latest              20bb25d32758        8 days ago          87.47 MB
+[dc-user@ech-10-157-136-3 ~]$
+
+docker run -ti my-new-image bash
+root@b2845052a960:/# ls
+MY_FILE  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@b2845052a960:/#
+
+[dc-user@ech-10-157-136-3 ~]$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+
+[dc-user@ech-10-157-136-3 ~]$ DOCKER_HIDE_LEGACY_COMMANDS=true docker --help
+
+Usage:  docker COMMAND
+
+A self-sufficient runtime for containers
+
+Options:
+      --config string      Location of client config files (default "/home/dc-user/.docker")
+  -D, --debug              Enable debug mode
+      --help               Print usage
+  -H, --host list          Daemon socket(s) to connect to
+  -l, --log-level string   Set the logging level ("debug"|"info"|"warn"|"error"|"fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default "/home/dc-user/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file (default "/home/dc-user/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default "/home/dc-user/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
+
+Management Commands:
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  volume      Manage volumes
+
+Commands:
+  build       Build an image from a Dockerfile
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  run         Run a command in a new container
+  search      Search the Docker Hub for images
+  version     Show the Docker version information
+
+Run 'docker COMMAND --help' for more information on a command.
+[dc-user@ech-10-157-136-3 ~]$
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container --help
+
+Usage:  docker container COMMAND
+
+Manage containers
+
+Options:
+      --help   Print usage
+
+Commands:
+  attach      Attach local standard input, output, and error streams to a running container
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  inspect     Display detailed information on one or more containers
+  kill        Kill one or more running containers
+  logs        Fetch the logs of a container
+  ls          List containers
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  prune       Remove all stopped containers
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  run         Run a command in a new container
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  wait        Block until one or more containers stop, then print their exit codes
+
+Run 'docker container COMMAND --help' for more information on a command.
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container run --help
+```
+
+```
+docker container run -it jboss/wildfly
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container run -d jboss/wildfly
+6f7a0d1d83efdc1929c12c83986a0861c94422dc8d86862114dd33f9896eda16
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
+6f7a0d1d83ef        jboss/wildfly       "/opt/jboss/wildfl..."   20 seconds ago       Up 19 seconds       8080/tcp            sleepy_euclid
+9bc9a8210f1c        jboss/wildfly       "/opt/jboss/wildfl..."   43 seconds ago       Up 41 seconds       8080/tcp            priceless_rosalind
+c27b1024702a        jboss/wildfly       "/opt/jboss/wildfl..."   About a minute ago   Up About a minute   8080/tcp            priceless_wright
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container stop 6f7a0d1d83ef 9bc9a8210f1c c27b1024702a
+6f7a0d1d83ef
+9bc9a8210f1c
+c27b1024702a
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+
+```
+[dc-user@ech-10-157-136-3 ~]$ docker container ls -a
+CONTAINER ID        IMAGE                                  COMMAND                  CREATED             STATUS                          PORTS               NAMES
+6f7a0d1d83ef        jboss/wildfly                          "/opt/jboss/wildfl..."   2 minutes ago       Exited (0) About a minute ago                       sleepy_euclid
+9bc9a8210f1c        jboss/wildfly                          "/opt/jboss/wildfl..."   3 minutes ago       Exited (0) About a minute ago                       priceless_rosalind
+0d8aaa7e04b1        jboss/wildfly                          "/opt/jboss/wildfl..."   4 minutes ago       Exited (0) 3 minutes ago                            vibrant_leakey
+c27b1024702a        jboss/wildfly                          "/opt/jboss/wildfl..."   4 minutes ago       Exited (0) About a minute ago                       priceless_wright
+b9a7008bd9ae        jboss/wildfly                          "/opt/jboss/wildfl..."   7 minutes ago       Exited (0) 5 minutes ago                            naughty_roentgen
+68ab6fe6266d        ubuntu:latest                          "bash"                   20 hours ago        Exited (0) 20 hours ago                             cocky_mclean
+6a66709a8a05        ubuntu:latest                          "bash"                   22 hours ago        Exited (0) 21 hours ago                             clever_davinci
+b2845052a960        my-new-image                           "bash"                   22 hours ago        Exited (0) 22 hours ago                             elated_tesla
+d5ac72cbe5ba        my-image                               "bash"                   22 hours ago        Exited (0) 22 hours ago                             jolly_bassi
+68393fa94b79        ubuntu:latest                          "bash"                   22 hours ago        Exited (0) 22 hours ago                             compassionate_lumiere
+36037204973b        ubuntu:latest                          "bash"                   22 hours ago        Exited (0) 22 hours ago                             jolly_hugle
+ddd5b5dfbdbf        ubuntu:latest                          "bash"                   22 hours ago        Exited (0) About an hour ago                        small_darwin
+a25b4e978628        ubuntu:latest                          "bash"                   24 hours ago        Exited (0) 24 hours ago                             jovial_payne
+a2f8935a71fb        ubuntu:latest                          "bash"                   24 hours ago        Exited (0) 22 hours ago                             pensive_mayer
+25f13c4f1816        ubuntu:latest                          "bash"                   24 hours ago        Exited (0) 24 hours ago                             clever_bartik
+e9da3f71a206        seqvence/static-site                   "/bin/sh -c 'cd /u..."   6 weeks ago         Exited (0) About an hour ago                        focused_noyce
+5d2c2fce2d95        kbastani/hystrix-dashboard             "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_hystrix_1
+9355865d9a72        kbastani/api-gateway-microservice      "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_gateway_1
+f16762e202fe        kbastani/recommendation-microservice   "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_recommendation_1
+e5b93365939f        kbastani/movies-ui                     "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_moviesui_1
+4d750d4b602e        kbastani/users-microservice            "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_user_1
+3062842547fa        kbastani/movie-microservice            "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_movie_1
+d7ed201425b3        kbastani/config-microservice           "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_configserver_1
+f9a10b7c0d0a        kbastani/discovery-microservice        "java -Djava.secur..."   6 weeks ago         Exited (0) 6 weeks ago                              docker_discovery_1
+b132a4059228        c49319bd6912                           "sh -c 'java $JAVA..."   8 weeks ago         Exited (0) 8 weeks ago                              sad_joliot
+2b8dd116ad20        c49319bd6912                           "sh -c 'java $JAVA..."   8 weeks ago         Created                                             sleepy_hoover
+51fef35f4ad4        c49319bd6912                           "sh -c 'java $JAVA..."   8 weeks ago         Exited (0) 8 weeks ago                              jolly_raman
+d2ea8a77ba54        redis                                  "docker-entrypoint..."   2 months ago        Exited (0) 2 months ago                             some-redis
+1be4f5dde2fb        a02eab9e2434                           "/entrypoint.sh my..."   2 months ago        Exited (0) 2 months ago                             mysql
+0f9abac69c0a        f991c20cb508                           "docker-entrypoint..."   2 months ago        Exited (0) 2 months ago                             stoic_cray
+f903d1f31bae        4ab4c602aa5e                           "/hello"                 2 months ago        Exited (0) 2 months ago                             hopeful_sammet
+4b4685bedbee        redis                                  "docker-entrypoint..."   2 months ago        Exited (0) 2 months ago                             peaceful_dubinsky
+9ab08df5606e        f991c20cb508                           "docker-entrypoint..."   2 months ago        Exited (0) 2 months ago                             tiny_varahamihira
+ef7630c911c8        4ab4c602aa5e                           "/hello"                 2 months ago        Exited (0) 2 months ago                             backstabbing_lalande
+e7d9e3713f5c        93fd78260bd1                           "/bin/bash"              2 months ago        Exited (0) 2 months ago                             angry_hodgkin
+970c680f4fa6        93fd78260bd1                           "/bin/bash"              2 months ago        Exited (0) 2 months ago                             mad_goldstine
+5ca8716abba8        97319b0b7d17                           "ruby hello.rb"          2 months ago        Exited (0) 2 months ago                             modest_chandrasekhar
+50e4e8c9923f        ec347d11e305                           "echo 'Hello O'Rei..."   2 months ago        Exited (0) 2 months ago                             boring_bartik
+6f2025730fff        c54a2cc56cbb                           "/hello"                 2 years ago         Exited (0) 2 years ago                              amazing_lumiere
+```
