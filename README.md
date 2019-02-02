@@ -926,3 +926,216 @@ hellojava           latest              006b6c0ea07b        11 seconds ago      
 ```
 mvn install -Pdocker
 ```
+
+
+# Tag and Share Docker Images
+
+# Instead of using the above hack from old days you can use now:
+```
+docker image prune -a
+```
+
+```
+docker container ls -aq
+d65f1c6b7982
+```
+```
+docker container rm -f $(docker container ls -aq)
+d65f1c6b7982
+```
+
+```
+docker image build  .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk:jdk-alpine
+jdk-alpine: Pulling from library/openjdk
+8e3ba11ec2a2: Pull complete
+311ad0da4533: Pull complete
+df312c74ce16: Pull complete
+Digest: sha256:1fd5a77d82536c88486e526da26ae79b6cd8a14006eb3da3a25eb8d2d682ccd6
+Status: Downloaded newer image for openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/2 : CMD echo "This is v1"
+ ---> Running in c3292404af9b
+ ---> a5d71ef27da8
+Removing intermediate container c3292404af9b
+Successfully built a5d71ef27da8
+```
+
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              a5d71ef27da8        33 seconds ago      103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+```
+# Without TAG and REPOSITORY, run the container by IMAGE ID
+```
+docker container run a5d71ef27da8
+This is v1
+```
+```
+docker image build -t helloworld .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/2 : CMD echo "This is v1"
+ ---> Using cache
+ ---> a5d71ef27da8
+Successfully built a5d71ef27da8
+Successfully tagged helloworld:latest
+```
+
+```
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+helloworld          latest              a5d71ef27da8        3 minutes ago       103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+```
+
+```
+docker container run helloworld
+This is v1
+docker container run helloworld:latest
+This is v1
+```
+# Now I'm going to remove the images with the latest tag
+```
+docker image rm helloworld:latest
+Error response from daemon: conflict: unable to remove repository reference "helloworld:latest" (must force) - container a41572d49e45 is using its referenced image a5d71ef27da8
+
+docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+173f5c83b67a        helloworld:latest   "/bin/sh -c 'echo ..."   50 seconds ago      Exited (0) 49 seconds ago                       wizardly_heisenberg
+1a5c5040bc06        helloworld:latest   "/bin/sh -c 'echo ..."   52 seconds ago      Exited (0) 51 seconds ago                       upbeat_beaver
+a41572d49e45        helloworld:latest   "/bin/sh -c 'echo ..."   56 seconds ago      Exited (0) 55 seconds ago                       elegant_beaver
+```
+
+```
+docker container rm -f $(docker container ls -aq)
+173f5c83b67a
+1a5c5040bc06
+a41572d49e45
+
+docker image rm helloworld:latest
+Untagged: helloworld:latest
+Deleted: sha256:a5d71ef27da87f3407e228f6c90fd21c367ad0f662b399d6480499d619d23cbb
+
+docker image build -t hellowold:1 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/2 : CMD echo "This is v1"
+ ---> Running in e1ada4cd2c31
+ ---> e05dccba3986
+Removing intermediate container e1ada4cd2c31
+Successfully built e05dccba3986
+Successfully tagged hellowold:1
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellowold           1                   e05dccba3986        28 seconds ago      103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+
+docker container run hellowold:1
+This is v1
+
+# How to tag the image ??
+docker image tag hellowold:1 hellowold:latest
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellowold           1                   e05dccba3986        3 minutes ago       103MB
+hellowold           latest              e05dccba3986        3 minutes ago       103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+
+docker container run hellowold:latest
+This is v1
+
+# Now open Dockerfile and change echo statement
+docker image build -t hellowold:2 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/2 : CMD echo "This is v2"
+ ---> Running in f65948a9e30b
+ ---> 204a942b1a38
+Removing intermediate container f65948a9e30b
+Successfully built 204a942b1a38
+Successfully tagged hellowold:2
+
+
+# This still shows v1
+docker container run hellowold
+This is v1
+
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+hellowold           2                   204a942b1a38        About a minute ago   103MB
+hellowold           1                   e05dccba3986        6 minutes ago        103MB
+hellowold           latest              e05dccba3986        6 minutes ago        103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago         103MB
+
+
+docker image tag hellowold:2 hellowold:latest
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellowold           2                   204a942b1a38        2 minutes ago       103MB
+hellowold           latest              204a942b1a38        2 minutes ago       103MB
+hellowold           1                   e05dccba3986        7 minutes ago       103MB
+openjdk             jdk-alpine          5801f7d008e5        6 months ago        103MB
+[dc-user@ech-10-157-136-3 helloworld]$ docker container run hellowold
+This is v2
+
+docker image tag hellowold:2 prateekashtikar/hellowold:latest
+
+docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: prateek512
+Password:
+Login Succeeded
+
+docker run -d -p 5000:5000 --restart always --name registry registry:2.6.0
+Unable to find image 'registry:2.6.0' locally
+2.6.0: Pulling from library/registry
+709515475419: Pull complete
+df6e278d8f96: Pull complete
+16218e264e88: Pull complete
+16748da81f63: Pull complete
+8d73e673c34c: Pull complete
+Digest: sha256:28be0609f90ef53e86e1872a11d672434ce1361711760cf1fe059efd222f8d37
+Status: Downloaded newer image for registry:2.6.0
+a24c2575c60d1556740ac5bba9bb201ef315afa3b79c120ec0b53ddb1b906257
+
+
+docker image tag hellowold:latest localhost:5000/prateeashtikar/helloworld:latest
+
+docker image ls
+REPOSITORY                                 TAG                 IMAGE ID            CREATED             SIZE
+prateekashtikar/hellowold                  latest              204a942b1a38        31 minutes ago      103MB
+localhost:5000/prateeashtikar/helloworld   latest              204a942b1a38        31 minutes ago      103MB
+hellowold                                  2                   204a942b1a38        31 minutes ago      103MB
+hellowold                                  latest              204a942b1a38        31 minutes ago      103MB
+hellowold                                  1                   e05dccba3986        37 minutes ago      103MB
+openjdk                                    jdk-alpine          5801f7d008e5        6 months ago        103MB
+registry                                   2.6.0               047218491f8c        23 months ago       33.2MB
+
+docker image push localhost:5000/prateeashtikar/helloworld:latest
+The push refers to a repository [localhost:5000/prateeashtikar/helloworld]
+93351e248e6e: Pushed
+298c3bb2664f: Pushed
+73046094a9b8: Pushed
+latest: digest: sha256:20d4e51eee3be4afea1a83867194b2728b5efd538bbbea66fc86b97d3c382a1e size: 947
+```
+
+
+
+
+
+
+
+
+
+
+
+
