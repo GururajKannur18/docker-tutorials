@@ -1129,9 +1129,31 @@ latest: digest: sha256:20d4e51eee3be4afea1a83867194b2728b5efd538bbbea66fc86b97d3
 ```
 
 
+```
+docker run -d -p 5000:5000 --restart always --name regsitry registry:2.6.0
+Unable to find image 'registry:2.6.0' locally
+2.6.0: Pulling from library/registry
+709515475419: Pull complete
+df6e278d8f96: Pull complete
+16218e264e88: Pull complete
+16748da81f63: Pull complete
+8d73e673c34c: Pull complete
+Digest: sha256:28be0609f90ef53e86e1872a11d672434ce1361711760cf1fe059efd222f8d37
+Status: Downloaded newer image for registry:2.6.0
+863df0930b73beb2674138a6e8413fdb2ef3596a6cbc335815aaa1e40955cd39
+```
 
+Now, push image to local registry tag image here
 
-
+```
+docker image push localhost:5000/prateek512/helloworld
+The push refers to repository [localhost:5000/prateek512/helloworld]
+4b7d93055d87: Pushed
+663e8522d78b: Pushed
+283fb404ea94: Pushed
+bebe7ce6215a: Pushed
+latest: digest: sha256:f15b6bc7cf40b72c6c6602d56f5de05fd093e0e282da151b95e02fd5b03ff46b size: 1150
+```
 
 
 
