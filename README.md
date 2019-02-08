@@ -1156,6 +1156,69 @@ latest: digest: sha256:f15b6bc7cf40b72c6c6602d56f5de05fd093e0e282da151b95e02fd5b
 ```
 
 
+# DockerCompose File
+```
+more docker-compose.yml
+version: '3'
+services:
+  web:
+    image: jboss/wildfly
+    volumes:
+      - ~/deployments:/opt/jboss/wildfly/standalone/deployments
+    ports:
+      - 8080:8080
+```
+
+```  
+docker-compose up -d
+WARNING: The Docker Engine you're using is running in swarm mode.
+
+Compose does not use swarm mode to deploy services to multiple nodes in a swarm. All containers will be scheduled on the current node.
+
+To deploy your application across the swarm, use `docker stack deploy`.
+
+Creating network "helloweb_default" with the default driver
+Pulling web (jboss/wildfly:)...
+latest: Pulling from jboss/wildfly
+aeb7866da422: Pull complete
+157601a0b538: Pull complete
+642f4164f381: Pull complete
+bda512e97517: Pull complete
+4cccaafdae21: Pull complete
+Creating helloweb_web_1_31dfdbdebfc3 ... done
+```
+
+```
+docker-compose ps
+           Name                          Command               State           Ports
+---------------------------------------------------------------------------------------------
+helloweb_web_1_a8145979996b   /opt/jboss/wildfly/bin/sta ...   Up      0.0.0.0:8080->8080/tcp
+```
+
+# Multicontainer application application with Docker Compose
+[dc-user@XX-XX136-96 couchbase-javaee]$ docker-compose up -d
+Starting couchbase-javaee_db_1_af00006ea3b2 ... done
+Creating couchbase-javaee_web_1_78e3fe7b208b ... done
+
+```
+docker container logs couchbase-javaee_db_1_af00006ea3b2
+docker container logs couchbase-javaee_web_1_a59a012c77a7
+```
+
+```
+curl http://localhost:8080/airlines/resources/airline
+[{"travel-sample":{"country":"United States","iata":"Q5","callsign":"MILE-AIR","name":"40-Mile Air","icao":"MLA","id":10,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"TQ","callsign":"TXW","name":"Texas Wings","icao":"TXW","id":10123,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"A1","callsign":"atifly","name":"Atifly","icao":"A1F","id":10226,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":null,"callsign":null,"name":"Jc royal.britannica","icao":"JRB","id":10642,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"ZQ","callsign":"LOCAIR","name":"Locair","icao":"LOC","id":10748,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"K5","callsign":"SASQUATCH","name":"SeaPort Airlines","icao":"SQH","id":10765,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"KO","callsign":"ACE AIR","name":"Alaska Central Express","icao":"AER","id":109,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":"5W","callsign":"FLYSTAR","name":"Astraeus","icao":"AEU","id":112,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"UU","callsign":"REUNION","name":"Air Austral","icao":"REU","id":1191,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","id":1203,"type":"airline"}}][dc-user@ech-10-157-136-96 couchbase-javaee]$
+```
+
+```
+docker-compose down
+Stopping couchbase-javaee_web_1_a59a012c77a7 ... done
+Stopping couchbase-javaee_db_1_af00006ea3b2  ... done
+Removing couchbase-javaee_web_1_a59a012c77a7 ... done
+Removing couchbase-javaee_db_1_af00006ea3b2  ... done
+Removing network couchbase-javaee_default
+```
+
 
 
 
