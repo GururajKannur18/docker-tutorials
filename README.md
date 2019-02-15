@@ -1219,6 +1219,396 @@ Removing couchbase-javaee_db_1_af00006ea3b2  ... done
 Removing network couchbase-javaee_default
 ```
 
+docker service create --name psight1 -p 8080:8080 --replicas 5 nigelpoulton/pluralsight-docker-ci
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                                       PORTS
+kydlawzlf51g        psight1             replicated          0/5                 nigelpoulton/pluralsight-docker-ci:latest   *:8080->8080/tcp 
+
+
+docker service ps psight1
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+121uesfz4som        psight1.1           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-146   Running             Running 19 seconds ago
+x0xb9ycd7crh        psight1.2           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 18 seconds ago
+usyi8c3n4ddk        psight1.3           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 25 seconds ago
+espp16g8nuyb        psight1.4           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-141   Running             Running 17 seconds ago
+rz5f3iy8b9k4        psight1.5           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 26 seconds ago
+
+
+ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                                       PORTS
+kydlawzlf51g        psight1             replicated          5/5                 nigelpoulton/pluralsight-docker-ci:latest   *:8080->8080/tcp
+
+
+ docker service inspect psight1
+[
+    {
+        "ID": "kydlawzlf51gifyjhfbhzb05y",
+        "Version": {
+            "Index": 57
+        },
+        "CreatedAt": "2019-02-15T12:37:22.132539114Z",
+        "UpdatedAt": "2019-02-15T12:37:22.138771766Z",
+        "Spec": {
+            "Name": "psight1",
+            "Labels": {},
+            "TaskTemplate": {
+                "ContainerSpec": {
+                    "Image": "nigelpoulton/pluralsight-docker-ci:latest@sha256:7a6b0125fe7893e70dc63b2c42ad779e5866c6d2779ceb9b12a28e2c38bd8d3d",
+                    "StopGracePeriod": 10000000000,
+                    "DNSConfig": {}
+                },
+                "Resources": {
+                    "Limits": {},
+                    "Reservations": {}
+                },
+                "RestartPolicy": {
+                    "Condition": "any",
+                    "Delay": 5000000000,
+                    "MaxAttempts": 0
+                },
+                "Placement": {},
+                "ForceUpdate": 0
+            },
+            "Mode": {
+                "Replicated": {
+                    "Replicas": 5
+                }
+            },
+            "UpdateConfig": {
+                "Parallelism": 1,
+                "FailureAction": "pause",
+                "Monitor": 5000000000,
+                "MaxFailureRatio": 0,
+                "Order": "stop-first"
+            },
+            "RollbackConfig": {
+                "Parallelism": 1,
+                "FailureAction": "pause",
+                "Monitor": 5000000000,
+                "MaxFailureRatio": 0,
+                "Order": "stop-first"
+            },
+            "EndpointSpec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 8080,
+                        "PublishedPort": 8080,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            }
+        },
+        "Endpoint": {
+            "Spec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 8080,
+                        "PublishedPort": 8080,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            },
+            "Ports": [
+                {
+                    "Protocol": "tcp",
+                    "TargetPort": 8080,
+                    "PublishedPort": 8080,
+                    "PublishMode": "ingress"
+                }
+            ],
+            "VirtualIPs": [
+                {
+                    "NetworkID": "oyr5bg4il7ffp9o5wsgd9xkih",
+                    "Addr": "10.255.0.10/16"
+                }
+            ]
+        }
+    }
+]
+
+Scaling Services
+=========================
+
+[dc-user@ech-10-168-141-180 ~]$ hostname
+ech-10-168-141-180
+[dc-user@ech-10-168-141-180 ~]$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                                       PORTS
+kydlawzlf51g        psight1             replicated          5/5                 nigelpoulton/pluralsight-docker-ci:latest   *:8080->8080/tcp
+[dc-user@ech-10-168-141-180 ~]$ docker node ls
+ID                            HOSTNAME             STATUS              AVAILABILITY        MANAGER STATUS
+52yz7a5yacadmqmo1fb45boo4 *   ech-10-168-141-180   Ready               Active              Reachable
+693kalkbw33z1a2yhw7vk684c     ech-10-168-142-141   Ready               Active              Reachable
+cgomcfmw6k2tf0lgyu6etvbbt     ech-10-168-142-146   Ready               Active
+hztbbi9zhxlfjadqihpf2co5g     ech-10-168-141-181   Ready               Active              Leader
+mpe68mqqgfr0hcrth0onihms3     ech-10-168-142-136   Down                Active
+t2tqsueo6rc5u7d84kph0jf7d     ech-10-168-142-136   Ready               Active
+v4bhbbl92htkanang95dvn8mj     ech-10-168-142-142   Down                Active
+vnv8hyeg4vgh2eera32rylvu7     ech-10-168-142-142   Ready               Active
+[dc-user@ech-10-168-141-180 ~]$ docker node ls
+ID                            HOSTNAME             STATUS              AVAILABILITY        MANAGER STATUS
+52yz7a5yacadmqmo1fb45boo4 *   ech-10-168-141-180   Ready               Active              Reachable
+693kalkbw33z1a2yhw7vk684c     ech-10-168-142-141   Ready               Active              Reachable
+cgomcfmw6k2tf0lgyu6etvbbt     ech-10-168-142-146   Ready               Active
+hztbbi9zhxlfjadqihpf2co5g     ech-10-168-141-181   Ready               Active              Leader
+mpe68mqqgfr0hcrth0onihms3     ech-10-168-142-136   Down                Active
+t2tqsueo6rc5u7d84kph0jf7d     ech-10-168-142-136   Ready               Active
+v4bhbbl92htkanang95dvn8mj     ech-10-168-142-142   Down                Active
+vnv8hyeg4vgh2eera32rylvu7     ech-10-168-142-142   Ready               Active
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$  docker service ps psight1
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE              ERROR               PORTS
+121uesfz4som        psight1.1           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-146   Running             Running 14 minutes ago
+x0xb9ycd7crh        psight1.2           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 14 minutes ago
+usyi8c3n4ddk        psight1.3           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 14 minutes ago
+t5xd0yqj504d        psight1.4           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-136   Running             Preparing 33 seconds ago
+espp16g8nuyb         \_ psight1.4       nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-141   Shutdown            Running 44 seconds ago
+rz5f3iy8b9k4        psight1.5           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 14 minutes ago
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$ docker service scale psight1=7
+psight1 scaled to 7
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                                       PORTS
+kydlawzlf51g        psight1             replicated          7/7                 nigelpoulton/pluralsight-docker-ci:latest   *:8080->8080/tcp
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$  docker service ps psight1
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE                ERROR               PORTS
+121uesfz4som        psight1.1           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-146   Running             Running 15 minutes ago
+x0xb9ycd7crh        psight1.2           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 15 minutes ago
+usyi8c3n4ddk        psight1.3           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 15 minutes ago
+t5xd0yqj504d        psight1.4           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-136   Running             Running 24 seconds ago
+espp16g8nuyb         \_ psight1.4       nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-141   Shutdown            Running about a minute ago
+rz5f3iy8b9k4        psight1.5           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 15 minutes ago
+sgc0tqxv4imc        psight1.6           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 19 seconds ago
+i2pthajjxwg8        psight1.7           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-136   Running             Running 19 seconds ago
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$ docker service update --replicas 10 psight1
+psight1
+Since --detach=false was not specified, tasks will be updated in the background.
+In a future release, --detach=false will become the default.
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$  docker service ps psight1
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+121uesfz4som        psight1.1           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-146   Running             Running 16 minutes ago
+x0xb9ycd7crh        psight1.2           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 16 minutes ago
+usyi8c3n4ddk        psight1.3           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 17 minutes ago
+t5xd0yqj504d        psight1.4           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-136   Running             Running 2 minutes ago
+espp16g8nuyb         \_ psight1.4       nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-141   Shutdown            Running 3 minutes ago
+rz5f3iy8b9k4        psight1.5           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 17 minutes ago
+sgc0tqxv4imc        psight1.6           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-142   Running             Running 2 minutes ago
+i2pthajjxwg8        psight1.7           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-136   Running             Running 2 minutes ago
+7q2owjhh398u        psight1.8           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 18 seconds ago
+4fqwzcnlf2a6        psight1.9           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-146   Running             Running 17 seconds ago
+kuxjt11vw8qw        psight1.10          nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 18 seconds ago
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$
+[dc-user@ech-10-168-141-180 ~]$ docker node ps
+
+
+docker node ps ech-10-168-141-181
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+x0xb9ycd7crh        psight1.2           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 22 minutes ago
+7q2owjhh398u        psight1.8           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-181   Running             Running 5 minutes ago
+
+
+docker node ps ech-10-168-141-180
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+usyi8c3n4ddk        psight1.3           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 22 minutes ago
+kuxjt11vw8qw        psight1.10          nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-141-180   Running             Running 5 minutes ago
+
+docker node ps ech-10-168-142-141
+ID                  NAME                IMAGE                                       NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+espp16g8nuyb        psight1.4           nigelpoulton/pluralsight-docker-ci:latest   ech-10-168-142-141   Shutdown            Shutdown 9 seconds ago
+
+
+================================
+
+Rolling Updates
+
+
+docker service rm psight1
+psight1
+
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+
+docker node ps self
+ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE       ERROR               PORTS
+
+docker network create -d overlay ps-net
+sq73dnf7n39vdc3ugald2ax3r
+
+
+docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+e608a71ddeeb        bridge              bridge              local
+23c1d21b2e9c        docker_gwbridge     bridge              local
+cdf2e62286be        host                host                local
+oyr5bg4il7ff        ingress             overlay             swarm
+3c8ac3ebedb2        none                null                local
+sq73dnf7n39v        ps-net              overlay             swarm
+
+
+docker service create --name psight2 --network ps-net -p 80:80 --replicas 12 nigelpoulton/tu-demo:v1
+jc0seeuq188kxsiqdeewlgbtz
+Since --detach=false was not specified, tasks will be created in the background.
+In a future release, --detach=false will become the default.
+
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                     PORTS
+jc0seeuq188k        psight2             replicated          0/12                nigelpoulton/tu-demo:v1   *:80->80/tcp
+
+
+ docker service ps psight2
+ID                  NAME                IMAGE                     NODE                 DESIRED STATE       CURRENT STATE              ERROR               PORTS
+icz22n7bl1wb        psight2.1           nigelpoulton/tu-demo:v1   ech-10-168-142-136   Running             Preparing 45 seconds ago
+jrdq9e6tv7i4        psight2.2           nigelpoulton/tu-demo:v1   ech-10-168-142-136   Running             Preparing 45 seconds ago
+rcxm88l0j7mt        psight2.3           nigelpoulton/tu-demo:v1   ech-10-168-142-146   Running             Preparing 46 seconds ago
+cbwp0ifpg88w        psight2.4           nigelpoulton/tu-demo:v1   ech-10-168-142-141   Running             Preparing 45 seconds ago
+l8spd7nekiiz        psight2.5           nigelpoulton/tu-demo:v1   ech-10-168-142-142   Running             Preparing 45 seconds ago
+z65bvmwinqbe        psight2.6           nigelpoulton/tu-demo:v1   ech-10-168-141-181   Running             Preparing 46 seconds ago
+mwgy4gh87zhi        psight2.7           nigelpoulton/tu-demo:v1   ech-10-168-142-146   Running             Preparing 46 seconds ago
+j1ped1nr8o0j        psight2.8           nigelpoulton/tu-demo:v1   ech-10-168-141-181   Running             Preparing 46 seconds ago
+lyb919uethwi        psight2.9           nigelpoulton/tu-demo:v1   ech-10-168-142-141   Running             Preparing 45 seconds ago
+v8ns148xxats        psight2.10          nigelpoulton/tu-demo:v1   ech-10-168-142-142   Running             Preparing 45 seconds ago
+lzkp4cdcjymf        psight2.11          nigelpoulton/tu-demo:v1   ech-10-168-141-180   Running             Preparing 46 seconds ago
+y3sg0pd7lqyd        psight2.12          nigelpoulton/tu-demo:v1   ech-10-168-141-180   Running             Preparing 46 seconds ago
+
+
+ docker node ls
+ID                            HOSTNAME             STATUS              AVAILABILITY        MANAGER STATUS
+52yz7a5yacadmqmo1fb45boo4 *   ech-10-168-141-180   Ready               Active              Leader
+693kalkbw33z1a2yhw7vk684c     ech-10-168-142-141   Ready               Active              Reachable
+cgomcfmw6k2tf0lgyu6etvbbt     ech-10-168-142-146   Ready               Active
+hztbbi9zhxlfjadqihpf2co5g     ech-10-168-141-181   Ready               Active              Reachable
+mpe68mqqgfr0hcrth0onihms3     ech-10-168-142-136   Down                Active
+t2tqsueo6rc5u7d84kph0jf7d     ech-10-168-142-136   Ready               Active
+v4bhbbl92htkanang95dvn8mj     ech-10-168-142-142   Down                Active
+vnv8hyeg4vgh2eera32rylvu7     ech-10-168-142-142   Ready               Active
+
+
+http://ech-10-168-141-180/
+
+
+docker service inspect --pretty psight2
+
+ID:             jc0seeuq188kxsiqdeewlgbtz
+Name:           psight2
+Service Mode:   Replicated
+ Replicas:      12
+Placement:
+UpdateConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Update order:      stop-first
+RollbackConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Rollback order:    stop-first
+ContainerSpec:
+ Image:         nigelpoulton/tu-demo:v1@sha256:9ccc0c67e5c5eaae4bebeeed9b22e0e22f8a35624c1d5c80f2c9623cbcc9b59a
+Resources:
+Networks: ps-net
+Endpoint Mode:  vip
+Ports:
+ PublishedPort = 80
+  Protocol = tcp
+  TargetPort = 80
+  PublishMode = ingress
+
+docker service update --image nigelpoulton/tu-demo:v2 --update-parallelism 2 --update-delay 10s psight2
+psight2
+Since --detach=false was not specified, tasks will be updated in the background.
+In a future release, --detach=false will become the default.
+
+docker service ps psight2
+ID                  NAME                IMAGE                     NODE                 DESIRED STATE       CURRENT STATE            ERROR               PORTS
+z16mvojy3wcs        psight2.1           nigelpoulton/tu-demo:v2   ech-10-168-142-141   Running             Running 4 seconds ago
+icz22n7bl1wb         \_ psight2.1       nigelpoulton/tu-demo:v1   ech-10-168-142-136   Shutdown            Shutdown 4 seconds ago
+jrdq9e6tv7i4        psight2.2           nigelpoulton/tu-demo:v1   ech-10-168-142-136   Running             Running 7 minutes ago
+rcxm88l0j7mt        psight2.3           nigelpoulton/tu-demo:v1   ech-10-168-142-146   Running             Running 7 minutes ago
+jjbdi3d34o8m        psight2.4           nigelpoulton/tu-demo:v2   ech-10-168-142-136   Running             Running 4 seconds ago
+cbwp0ifpg88w         \_ psight2.4       nigelpoulton/tu-demo:v1   ech-10-168-142-141   Shutdown            Shutdown 4 seconds ago
+l8spd7nekiiz        psight2.5           nigelpoulton/tu-demo:v1   ech-10-168-142-142   Running             Running 7 minutes ago
+z65bvmwinqbe        psight2.6           nigelpoulton/tu-demo:v1   ech-10-168-141-181   Running             Running 6 minutes ago
+mwgy4gh87zhi        psight2.7           nigelpoulton/tu-demo:v1   ech-10-168-142-146   Running             Running 7 minutes ago
+j1ped1nr8o0j        psight2.8           nigelpoulton/tu-demo:v1   ech-10-168-141-181   Running             Running 6 minutes ago
+lyb919uethwi        psight2.9           nigelpoulton/tu-demo:v1   ech-10-168-142-141   Running             Running 7 minutes ago
+v8ns148xxats        psight2.10          nigelpoulton/tu-demo:v1   ech-10-168-142-142   Running             Running 7 minutes ago
+lzkp4cdcjymf        psight2.11          nigelpoulton/tu-demo:v1   ech-10-168-141-180   Running             Running 7 minutes ago
+y3sg0pd7lqyd        psight2.12          nigelpoulton/tu-demo:v1   ech-10-168-141-180   Running             Running 7 minutes ago
+
+http://ech-10-168-141-181/
+
+docker service ps psight2 | grep :v2
+z16mvojy3wcs        psight2.1           nigelpoulton/tu-demo:v2   ech-10-168-142-141   Running             Running 3 minutes ago
+5qkkut81mrzz        psight2.2           nigelpoulton/tu-demo:v2   ech-10-168-142-136   Running             Running 3 minutes ago
+zhm5l0h42wzt        psight2.3           nigelpoulton/tu-demo:v2   ech-10-168-142-146   Running             Running 2 minutes ago
+jjbdi3d34o8m        psight2.4           nigelpoulton/tu-demo:v2   ech-10-168-142-136   Running             Running 3 minutes ago
+a03kbwi4y5c8        psight2.5           nigelpoulton/tu-demo:v2   ech-10-168-142-142   Running             Running 2 minutes ago
+kczlp0ucr5xu        psight2.6           nigelpoulton/tu-demo:v2   ech-10-168-141-181   Running             Running about a minute ago
+v18lel3akntg        psight2.7           nigelpoulton/tu-demo:v2   ech-10-168-142-146   Running             Running 2 minutes ago
+y1dgzzuu1lbu        psight2.8           nigelpoulton/tu-demo:v2   ech-10-168-141-181   Running             Running 3 minutes ago
+msvtydso1hxm        psight2.9           nigelpoulton/tu-demo:v2   ech-10-168-142-141   Running             Running about a minute ago
+6cidq28xy62y        psight2.10          nigelpoulton/tu-demo:v2   ech-10-168-142-142   Running             Running about a minute ago
+r9ntv9ytvvcs        psight2.11          nigelpoulton/tu-demo:v2   ech-10-168-141-180   Running             Running 2 minutes ago
+ko3ncl2tfxvl        psight2.12          nigelpoulton/tu-demo:v2   ech-10-168-141-180   Running             Running about a minute ago
+
+
+docker service inspect --pretty psight2
+
+ID:             jc0seeuq188kxsiqdeewlgbtz
+Name:           psight2
+Service Mode:   Replicated
+ Replicas:      12
+UpdateStatus:
+ State:         completed
+ Started:       4 minutes
+ Completed:     2 minutes
+ Message:       update completed
+Placement:
+UpdateConfig:
+ Parallelism:   2
+ Delay:         10s
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Update order:      stop-first
+RollbackConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Rollback order:    stop-first
+ContainerSpec:
+ Image:         nigelpoulton/tu-demo:v2@sha256:d3c0d8c9d5719d31b79cca146025fa7d1de4749fef58a7e038cf0ef2ba5eb74c
+Resources:
+Networks: ps-net
+Endpoint Mode:  vip
+Ports:
+ PublishedPort = 80
+  Protocol = tcp
+  TargetPort = 80
+  PublishMode = ingress
+
+====================
+
+Stacks and Bundles
+
 
 
 
