@@ -1,0 +1,1165 @@
+Docker for Java Develoers
+============================
+
+GIT Link: https://github.com/arun-gupta/docker-for-java
+
+(1) - Run your first docker container
+
+docker --version
+
+docker --help
+
+DOCKER_HIDE_LEGACY_COMMANDS=true docker --help
+
+docker container --help
+
+docker container run --help
+
+service docker restart
+
+# Delete all containers
+docker rm $(docker ps -a -q)
+
+# Delete all images
+docker rmi $(docker images -q)
+
+docker container run -it jboss/wildfly   ==> it sands for interactive mode
+
+^c to terminate the container
+
+docker container run -d jboss/wildfly
+c0fed81d10bcd147de1db8e78be9d31af23b2125824dfd2cca5529d2304d6d65
+
+docker container ls
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS               NAMES
+c0fed81d10bc        jboss/wildfly             "/opt/jboss/wildfl..."   35 seconds ago      Up 33 seconds       8080/tcp            angry_bohr
+
+
+# If I want to stop the container
+
+docker container stop angry_bohr   (Or you can also specify docker Id)
+
+docker container stop angry_bohr
+angry_bohr
+
+
+docker container ls
+CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS               NAMES
+
+docker container ls -a
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                      PORTS               NAMES
+c0fed81d10bc        jboss/wildfly             "/opt/jboss/wildfl..."   11 minutes ago      Exited (0) 2 minutes ago                        angry_bohr
+baf19606e7d9        jboss/wildfly             "/opt/jboss/wildfl..."   14 minutes ago      Exited (0) 12 minutes ago                       inspiring_beaver
+
+
+docker container rm inspiring_beaver
+inspiring_beaver
+
+I want to assign the name relevant to my application
+
+docker container run -d --name web jboss/wildfly
+bc66ab7e1e307b476f5e8beeb01301473b95a95cdbdfb6179cca07a7d055f64f
+
+
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+bc66ab7e1e30        jboss/wildfly       "/opt/jboss/wildfl..."   38 seconds ago      Up 37 seconds       8080/tcp            web
+
+
+docker container rm -f web      ==> (-f -> stop & remove container)
+web
+
+docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+Want to run shell in the container. Make sure run this in "interactive" mode, this gives me bash
+docker container run -it --name web jboss/wildfly bash
+[jboss@f06dddde3def ~]$
+
+ pwd
+/opt/jboss
+[jboss@f06dddde3def ~]$ cd wildfly/standalone/
+[jboss@f06dddde3def standalone]$ ls -la
+total 8
+drwxrwxr-x  6 jboss root   68 Jan  5 19:10 .
+drwxrwxr-x 12 jboss root 4096 Jan  5 19:10 ..
+drwxrwxr-x  2 jboss root 4096 Feb 13 13:29 configuration
+drwxrwxr-x  2 jboss root   24 Feb 13 13:29 deployments
+drwxrwxr-x  3 jboss root   17 Jan  5 19:10 lib
+drwxrwxr-x  3 jboss root   18 Jan  5 19:10 tmp
+
+[jboss@f06dddde3def standalone]$ exit
+exit
+
+docker container  rm -f web
+web
+
+
+
+-----------------------------------------------------------
+Fyi...
+docker container rm -f 4ae24abf6f23 b91eb271241c
+4ae24abf6f23
+b91eb271241c
+
+docker container rm -f 18d58290b05c 165fcd22ccf5
+18d58290b05c
+165fcd22ccf5
+---------------------------------------------------------------
+ 
+
+(2) - Run container (ports and volumes)
+
+docker container run -d --name web -P jboss/wildfly
+1046e9d3fedb9e20dd4005946bd0626351da1d87505ee03b7a68d2fdfe239d3b
+
+-P: Take all the exposed ports and published them in the predefined range
+
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                     NAMES
+1046e9d3fedb        jboss/wildfly       "/opt/jboss/wildfl..."   21 seconds ago      Up 21 seconds       0.0.0.0:32768->8080/tcp   web
+
+Take all the network interfaces indicated on port 32768 and redirect to port 8080 in the container
+
+hostname
+ech-10-168-141-180
+
+http://ech-10-168-141-180:32768/
+
+
+docker container logs web
+Here you can see the complete logs.. Not shown here
+
+
+docker container run -d --name web -p 9080:9080 jboss/wildfly
+47c781095045c934d29dc95c7c809f13d88fe0cdddaa423340753f351eff0241
+
+Fyi...
+sudo netstat -nlp | grep 8080
+tcp6       0      0 :::8080                 :::*                    LISTEN      2527/dockerd
+
+docker container logs web
+
+
+
+http://ech-10-168-141-180:9080/
+
+docker container rm -f web
+web
+
+docker container ls -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+
+
+GIT Link: https://github.com/arun-gupta/docker-for-java
+
+git clone https://github.com/arun-gupta/docker-for-java
+Cloning into 'docker-for-java'...
+remote: Enumerating objects: 423, done.
+remote: Total 423 (delta 0), reused 0 (delta 0), pack-reused 423
+Receiving objects: 100% (423/423), 16.65 MiB | 282.00 KiB/s, done.
+Resolving deltas: 100% (200/200), done.
+
+docker container run -d --name web -p 9080:9080 -v `pwd`/webapp.war:/opt/jboss/wildfly/standalone/deployments/webapp.war jboss/wildfly
+5721f45354c7281127c6d56c973e7956152e4cddd40cfd1ecda0829aa3dca75e
+
+
+docker container logs web -f
+...............
+17:12:24,028 INFO  [io.smallrye.metrics] (MSC service thread 1-1) MicroProfile: Metrics activated
+17:12:24,119 INFO  [org.jboss.as.clustering.infinispan] (ServerService Thread Pool -- 74) WFLYCLINF0002: Started client-mappings cache from ejb container
+17:12:24,919 INFO  [org.jboss.resteasy.resteasy_jaxrs.i18n] (ServerService Thread Pool -- 75) RESTEASY002225: Deploying javax.ws.rs.core.Application: class org.javaee7.sample.MyApplication$Proxy$_$$_WeldClientProxy
+17:12:24,966 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 75) WFLYUT0021: Registered web context: '/webapp' for server 'default-server'
+17:12:24,999 INFO  [org.jboss.as.server] (ServerService Thread Pool -- 43) WFLYSRV0010: Deployed "webapp.war" (runtime-name : "webapp.war")
+17:12:25,045 INFO  [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0212: Resuming server
+17:12:25,047 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management
+17:12:25,047 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990
+17:12:25,047 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 15.0.1.Final (WildFly Core 7.0.0.Final) started in 5748ms - Started 432 of 615 services (326 services are lazy, passive or on-demand)
+
+
+docker container run -d --name web -p 8080:8080 -v `pwd`/webapp.war:/opt/jboss/wildfly/standalone/deployments/webapp.war jboss/wildfly
+c65137b42e568c2b39015a4be290f34f26b7715ac18830564cf2df62869d4132
+
+docker container ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+a6777dc6feb3        jboss/wildfly       "/opt/jboss/wildfl..."   31 seconds ago      Up 31 seconds       0.0.0.0:8080->8080/tcp   web
+
+
+curl http://localhost:8080/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+
+==================================================================================
+
+(3) - Create Your First Docker Image
+
+docker image --help
+
+In chapeter2
+mkdir helloimage
+cd helloimage/
+vi Dockerfile
+FROM ubuntu
+
+CMD echo "hello world"
+
+docker image build -t helloworld .
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+helloworld          latest              ef98d5cba0a6        43 seconds ago      88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+
+This shows how the image is build
+docker history helloworld
+IMAGE               CREATED              CREATED BY                                      SIZE                COMMENT
+ef98d5cba0a6        About a minute ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ec...   0B
+47b19964fb50        13 days ago          /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>           13 days ago          /bin/sh -c mkdir -p /run/systemd && echo '...   7B
+<missing>           13 days ago          /bin/sh -c rm -rf /var/lib/apt/lists/*          0B
+<missing>           13 days ago          /bin/sh -c set -xe   && echo '#!/bin/sh' >...   745B
+<missing>           13 days ago          /bin/sh -c #(nop) ADD file:529264c6593975a...   88.1MB
+
+docker container run helloworld
+hello world
+
+===============================================================================================
+
+(4) - Create your first Java Docker image
+
+Build very first Java image
+
+mkdir helloworld
+$ cd helloworld/
+[dc-user@ech-10-168-141-180 helloworld]$ vi Dockerfile
+[dc-user@ech-10-168-141-180 helloworld]$ more Dockerfile
+
+FROM openjdk
+CMD java -version
+
+
+docker image build -t hellojava .
+
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           latest              d2a0aa05b415        9 seconds ago       821MB
+helloworld          latest              ef98d5cba0a6        9 minutes ago       88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+openjdk             latest              4b298a8f36ec        13 days ago         821MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+
+docker container run hellojava
+openjdk version "11.0.2" 2019-01-15
+OpenJDK Runtime Environment (build 11.0.2+9-Debian-3bpo91)
+OpenJDK 64-Bit Server VM (build 11.0.2+9-Debian-3bpo91, mixed mode, sharing)
+
+
+Now open the Dockerfile and update it 
+
+vi Dockerfile
+FROM openjdk:jdk-alpine
+CMD java -version
+
+
+docker image build -t hellojava:2 .
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           2                   b15185f7c842        50 seconds ago      103MB
+hellojava           latest              d2a0aa05b415        4 minutes ago       821MB
+helloworld          latest              ef98d5cba0a6        13 minutes ago      88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+openjdk             latest              4b298a8f36ec        13 days ago         821MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+openjdk             jdk-alpine          5801f7d008e5        7 months ago        103MB
+
+
+docker container run hellojava:2
+openjdk version "1.8.0_171"
+OpenJDK Runtime Environment (IcedTea 3.8.0) (Alpine 8.171.11-r0)
+OpenJDK 64-Bit Server VM (build 25.171-b11, mixed mode)
+
+==============================================================
+
+(5) - Copy jar files in the Docker Image
+
+- COPY instructions: Copy new files or directories to the container filesystem
+- ADD instructions: COPY instructions Allow tar file auto-extraction in the image
+   - For ex: ADD app.tar.gz /opt/var/myapp Can download files from remote URL
+   - Recommanded to use CURL or wget instead
+   
+mkdir helloweb
+cd helloweb/
+cp ../webapp.war .
+
+vi Dockerfile
+FROM jboss/wildfly
+
+COPY webapp.war /opt/jboss/wildfly/standalone/deployments/webapp.war
+
+
+docker image build -t helloweb .
+Sending build context to Docker daemon  9.216kB
+Step 1/2 : FROM jboss/wildfly
+ ---> 5b9bb796f7d7
+Step 2/2 : COPY webapp.war /opt/jboss/wildfly/standalone/deployments/webapp.war
+ ---> 75ea3375ab1d
+Removing intermediate container 8d786d56ccc3
+Successfully built 75ea3375ab1d
+Successfully tagged helloweb:latest
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+helloweb            latest              75ea3375ab1d        About a minute ago   744MB
+hellojava           2                   b15185f7c842        17 minutes ago       103MB
+hellojava           latest              d2a0aa05b415        20 minutes ago       821MB
+helloworld          latest              ef98d5cba0a6        30 minutes ago       88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago           744MB
+openjdk             latest              4b298a8f36ec        13 days ago          821MB
+ubuntu              latest              47b19964fb50        13 days ago          88.1MB
+openjdk             jdk-alpine          5801f7d008e5        7 months ago         103MB
+
+
+docker container run -d -p 8080:8080 helloweb
+576f96c0661edf567e40c175c5b0fb1c387726cb1ed17b5360d254d3d63df028
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+If we get below error
+
+ Error response from daemon: driver failed programming external connectivity on endpoint nervous_volhard (eeb6ed24ca179dd29303aa2d877852248d9964c887b0e6eacb7065ec0738069e): Bind for 0.0.0.0:8080 failed: port is already allocated.
+
+
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+a6777dc6feb3        jboss/wildfly       "/opt/jboss/wildfl..."   2 hours ago         Up 2 hours          0.0.0.0:8080->8080/tcp   web1
+
+$ docker container rm -f web1
+web1
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+576f96c0661e        helloweb            "/opt/jboss/wildfl..."   45 seconds ago      Up 44 seconds       0.0.0.0:8080->8080/tcp   optimistic_austin
+
+
+ curl http://localhost:8080/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+
+=========================================================================================================
+
+(6) - Run JAR file from the Docker
+
+vi Dockerfile
+
+FROM openjdk:jdk-alpine
+
+COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+
+CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+
+
+docker build -t hellojava:3 .
+Sending build context to Docker daemon  56.83kB
+Step 1/3 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/3 : COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+ ---> 86e4a1163f87
+Removing intermediate container 18650d809677
+Step 3/3 : CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+ ---> Running in 58b02ac7e777
+ ---> f6f746bdbfbe
+Removing intermediate container 58b02ac7e777
+Successfully built f6f746bdbfbe
+Successfully tagged hellojava:3
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           3                   f6f746bdbfbe        54 seconds ago      103MB
+helloweb            latest              75ea3375ab1d        About an hour ago   744MB
+hellojava           2                   b15185f7c842        About an hour ago   103MB
+hellojava           latest              d2a0aa05b415        About an hour ago   821MB
+helloworld          latest              ef98d5cba0a6        About an hour ago   88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+openjdk             latest              4b298a8f36ec        13 days ago         821MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+openjdk             jdk-alpine          5801f7d008e5        7 months ago        103MB
+
+docker container run hellojava:3
+Hello World!
+
+Now, change the App.java change the S.O.P statements
+
+docker build -t hellojava:4 .
+Sending build context to Docker daemon  56.83kB
+Step 1/3 : FROM openjdk:jdk-alpine
+ ---> 5801f7d008e5
+Step 2/3 : COPY myapp/target/myapp-1.0-SNAPSHOT.jar /deployments/
+ ---> c0125784d521
+Removing intermediate container e391a78688a9
+Step 3/3 : CMD java -jar /deployments/myapp-1.0-SNAPSHOT.jar
+ ---> Running in 2a82ee61fb5f
+ ---> 83a057ad178c
+Removing intermediate container 2a82ee61fb5f
+Successfully built 83a057ad178c
+Successfully tagged hellojava:4
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           4                   83a057ad178c        17 seconds ago      103MB
+hellojava           3                   f6f746bdbfbe        5 minutes ago       103MB
+helloweb            latest              75ea3375ab1d        About an hour ago   744MB
+hellojava           2                   b15185f7c842        About an hour ago   103MB
+hellojava           latest              d2a0aa05b415        About an hour ago   821MB
+helloworld          latest              ef98d5cba0a6        About an hour ago   88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+openjdk             latest              4b298a8f36ec        13 days ago         821MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+openjdk             jdk-alpine          5801f7d008e5        7 months ago        103MB
+
+docker container run hellojava:4
+Howdy World!
+
+docker container run hellojava:3
+Hello World!
+
+===================================================================================
+
+(7) - Docker And Maven
+
+Git clone https://github.com/arun-gupta/docker-java-sample
+
+mvn clean package exec:java
+
+This will print the output like below - 
+
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.20/plexus-utils-3.0.20.jar (243 kB at 30 kB/s)
+Hello World!
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 01:29 min
+[INFO] Finished at: 2019-02-19T03:43:25-06:00
+[INFO] ------------------------------------------------------------------------
+$
+
+
+mvn package -Pdocker
+
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hellojava           latest              eab81f18140a        39 seconds ago      821MB
+hellojava           4                   83a057ad178c        About an hour ago   103MB
+hellojava           3                   f6f746bdbfbe        About an hour ago   103MB
+helloweb            latest              75ea3375ab1d        2 hours ago         744MB
+hellojava           2                   b15185f7c842        3 hours ago         103MB
+helloworld          latest              ef98d5cba0a6        3 hours ago         88.1MB
+jboss/wildfly       latest              5b9bb796f7d7        5 days ago          744MB
+openjdk             latest              4b298a8f36ec        13 days ago         821MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+openjdk             jdk-alpine          5801f7d008e5        7 months ago        103MB
+
+=========================================================================================
+
+Tag and Share Docker Images
+
+- "Latest" - default tag for docker images
+- Ability to specify additional tags
+
+docker image rm -f $(docker image ls -aq) ==> To delete all iamges
+
+docker container rm -f $(docker container ls -aq)
+f008fc9f4689
+0a0107c8fc9e
+c8785589e651
+576f96c0661e
+2a48066d162e
+d82a146a1189
+b2e44292fbf7
+d7e77ca373a9
+62c064f2ace4
+
+
+clean all the images and containers
+
+docker image build .
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              7470296f0d76        20 seconds ago      88.1MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+
+This time repository is nun and Tag is nun
+
+docker container run 7470296f0d76
+This is v1
+
+ docker image build -t helloworld .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu:latest
+ ---> 47b19964fb50
+Step 2/2 : CMD echo "This is v1"
+ ---> Using cache
+ ---> 7470296f0d76
+Successfully built 7470296f0d76
+Successfully tagged helloworld:latest
+
+ docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+helloworld          latest              7470296f0d76        About a minute ago   88.1MB
+ubuntu              latest              47b19964fb50        13 days ago          88.1MB
+
+docker container run helloworld:latest
+This is v1
+
+docker container run helloworld
+This is v1
+
+docker image rm -f helloworld:latest
+Untagged: helloworld:latest
+Deleted: sha256:7470296f0d76ef88cdca652655101f9a0f64b6fc882a574fad62b930781f52f3
+
+docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                          PORTS               NAMES
+fecfbd25a3e4        7470296f0d76        "/bin/sh -c 'echo ..."   About a minute ago   Exited (0) 59 seconds ago                           reverent_thompson
+0b55e519f8d0        7470296f0d76        "/bin/sh -c 'echo ..."   About a minute ago   Exited (0) About a minute ago                       vigorous_pasteur
+4e8022956597        7470296f0d76        "/bin/sh -c 'echo ..."   2 minutes ago        Exited (0) 2 minutes ago                            quizzical_aryabhata
+
+docker container rm -f $(docker container ls -aq)
+fecfbd25a3e4
+0b55e519f8d0
+4e8022956597
+
+docker image build -t helloworld:latest .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu:latest
+ ---> 47b19964fb50
+Step 2/2 : CMD echo "This is v1"
+ ---> Running in 9ba992e90d97
+ ---> 5bc16d7b5233
+Removing intermediate container 9ba992e90d97
+Successfully built 5bc16d7b5233
+Successfully tagged helloworld:latest
+
+docker image build -t helloworld:1 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu:latest
+ ---> 47b19964fb50
+Step 2/2 : CMD echo "This is v1"
+ ---> Using cache
+ ---> 5bc16d7b5233
+Successfully built 5bc16d7b5233
+Successfully tagged helloworld:1
+
+ docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+helloworld          1                   5bc16d7b5233        About a minute ago   88.1MB
+ubuntu              latest              47b19964fb50        13 days ago          88.1MB
+
+docker container run helloworld:1
+This is v1
+
+Tag the 1 iamge to latest
+
+docker image tag helloworld:1 helloworld:latest
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+helloworld          1                   5bc16d7b5233        3 minutes ago       88.1MB
+helloworld          latest              5bc16d7b5233        3 minutes ago       88.1MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+
+docker container run helloworld:latest
+This is v1
+
+Now open the Dockerfile and change the echo statements
+
+more Dockerfile
+FROM ubuntu:latest
+CMD echo "This is v2"
+ 
+docker container run helloworld:latest
+This is v1
+
+
+Because here latest is pointing the tag:1 image
+
+docker image build -t helloworld:2 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM ubuntu:latest
+ ---> 47b19964fb50
+Step 2/2 : CMD echo "This is v2"
+ ---> Running in 9f9afdf7a1d9
+ ---> 406cefbb8c0b
+Removing intermediate container 9f9afdf7a1d9
+Successfully built 406cefbb8c0b
+Successfully tagged helloworld:2
+
+docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+helloworld          2                   406cefbb8c0b        17 seconds ago      88.1MB
+helloworld          1                   5bc16d7b5233        7 minutes ago       88.1MB
+helloworld          latest              5bc16d7b5233        7 minutes ago       88.1MB
+ubuntu              latest              47b19964fb50        13 days ago         88.1MB
+
+docker image tag helloworld:2 helloworld:latest
+
+docker container run helloworld:2
+This is v2
+
+docker image push localhost:5000/prateeashtikar/helloworld:latest
+The push refers to a repository [localhost:5000/prateeashtikar/helloworld]
+93351e248e6e: Pushed
+298c3bb2664f: Pushed
+73046094a9b8: Pushed
+latest: digest: sha256:20d4e51eee3be4afea1a83867194b2728b5efd538bbbea66fc86b97d3c382a1e size: 947
+
+
+docker run -d -p 5000:5000 --restart always --name registry registry:2.6.0
+Unable to find image 'registry:2.6.0' locally
+2.6.0: Pulling from library/registry
+709515475419: Pull complete
+df6e278d8f96: Pull complete
+16218e264e88: Pull complete
+16748da81f63: Pull complete
+8d73e673c34c: Pull complete
+Digest: sha256:28be0609f90ef53e86e1872a11d672434ce1361711760cf1fe059efd222f8d37
+Status: Downloaded newer image for registry:2.6.0
+a3fe59b90c900d254e7f83f2c68adf7758a6b764d951ba28fed306bc5004c260
+
+docker image push localhost:5000/prateek512/helloworld
+The push refers to repository [localhost:5000/prateek512/helloworld]
+4b7d93055d87: Pushed
+663e8522d78b: Pushed
+283fb404ea94: Pushed
+bebe7ce6215a: Pushed
+latest: digest: sha256:f15b6bc7cf40b72c6c6602d56f5de05fd093e0e282da151b95e02fd5b03ff46b size: 1150
+
+=============================================================================================
+
+Multi-container Applications
+
+(1) - Docker Compose File
+
+mkdir helloweb
+cd helloweb/
+more docker-compose.yml
+version: '3'
+services:
+  web:
+    image: jboss/wildfly
+    volumes:
+      - ~/deployments:/opt/jboss/wildfly/standalone/deployments
+    ports:
+      - 8080:8080
+
+	  
+docker-compose up -d
+Creating network "helloweb_default" with the default driver
+Pulling web (jboss/wildfly:)...
+latest: Pulling from jboss/wildfly
+a02a4930cb5d: Pull complete
+b5ffff9dbcda: Pull complete
+36845d6d0218: Pull complete
+08619c8c88e2: Pull complete
+34a64dc14b63: Pull complete
+Digest: sha256:a568ebd8abea6a07bd5499af843097eae871af25e1a83a7ff69d9f22002ff2cc
+Status: Downloaded newer image for jboss/wildfly:latest
+Creating helloweb_web_1 ... done
+
+
+docker-compose ps
+     Name                   Command               State           Ports
+--------------------------------------------------------------------------------
+helloweb_web_1   /opt/jboss/wildfly/bin/sta ...   Up      0.0.0.0:8080->8080/tcp
+
+docker-compose logs -f
+
+The above logic doesn't works well
+
+ls
+docker-compose.yml  Dockerfile  webapp.war
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+docker image build .
+Sending build context to Docker daemon  10.24kB
+Step 1/2 : FROM jboss/wildfly
+ ---> 5b9bb796f7d7
+Step 2/2 : ADD webapp.war /opt/jboss/wildfly/standalone/deployments/
+ ---> Using cache
+ ---> 49604ce4f1d9
+Successfully built 49604ce4f1d9
+
+
+docker-compose up -d
+helloweb_web_1 is up-to-date
+
+
+curl http://localhost:8080/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+
+docker-compose down
+Stopping helloweb_web_1 ... done
+Removing helloweb_web_1 ... done
+Removing network helloweb_default
+
+=========================================================
+
+Multi-container application with Docker Compose
+
+ pwd
+/home/dc-user/docker-for-java/chapter3
+mkdir travel
+cd travel/
+vi docker-compose.yml
+
+more docker-compose.yml
+version: '3'
+services:
+  web:
+    image: arungupta/couchbase-javaee:travel
+    environment:
+      - COUCHBASE_URI=db
+    ports:
+      - 8080:8080
+      - 9990:9990
+    depends_on:
+      - db
+  db:
+    image: arungupta/couchbase:travel
+    ports:
+      - 8091:8091
+      - 8092:8092
+      - 8093:8093
+      - 11210:11210
+
+
+docker-compose up -d
+Creating network "travel_default" with the default driver
+Pulling db (arungupta/couchbase:travel)...
+travel: Pulling from arungupta/couchbase
+c60055a51d74: Pull complete
+755da0cdb7d2: Pull complete
+969d017f67e6: Pull complete
+37c9a9113595: Pull complete
+a3d9f8479786: Pull complete
+1e2d8c867794: Pull complete
+d388cb7083d3: Pull complete
+b47800ec90de: Pull complete
+e333ecf73262: Pull complete
+07291fb18005: Pull complete
+c927f04411f1: Pull complete
+bf7f6ce74683: Pull complete
+4e204879a4a0: Pull complete
+b4353893b3a2: Pull complete
+Digest: sha256:75bfec0ef5dfa1494ef1ff339d16ca544bcbee7c90b4236005d2352aed362101
+Status: Downloaded newer image for arungupta/couchbase:travel
+Pulling web (arungupta/couchbase-javaee:travel)...
+travel: Pulling from arungupta/couchbase-javaee
+45a2e645736c: Pull complete
+f11bec86d3fc: Pull complete
+6275a4ad0275: Pull complete
+9905334bc95a: Pull complete
+4cec62d57c89: Pull complete
+101a9f3b962c: Pull complete
+f3bef253e963: Pull complete
+Digest: sha256:295ba6bf7e0f7d8d92d265b701d4f3f9811a375ef7707f8a6a39e58a76e07fc8
+Status: Downloaded newer image for arungupta/couchbase-javaee:travel
+Creating travel_db_1 ... done
+Creating travel_web_1 ... done
+
+You can check the logs like :  docker-compose logs -f
+
+ curl http://localhost:8080/airlines/resources/airline
+[{"travel-sample":{"country":"United States","iata":"Q5","callsign":"MILE-AIR","name":"40-Mile Air","icao":"MLA","id":10,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"TQ","callsign":"TXW","name":"Texas Wings","icao":"TXW","id":10123,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"A1","callsign":"atifly","name":"Atifly","icao":"A1F","id":10226,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":null,"callsign":null,"name":"Jc royal.britannica","icao":"JRB","id":10642,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"ZQ","callsign":"LOCAIR","name":"Locair","icao":"LOC","id":10748,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"K5","callsign":"SASQUATCH","name":"SeaPort Airlines","icao":"SQH","id":10765,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"KO","callsign":"ACE AIR","name":"Alaska Central Express","icao":"AER","id":109,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":"5W","callsign":"FLYSTAR","name":"Astraeus","icao":"AEU","id":112,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"UU","callsign":"REUNION","name":"Air Austral","icao":"REU","id":1191,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","id":1203,"type":"airline"}}]
+
+
+docker-compose down
+Stopping travel_web_1 ... done
+Stopping travel_db_1  ... done
+Removing travel_web_1 ... done
+Removing travel_db_1  ... done
+Removing network travel_default
+
+This will also removes the network as well....
+
+===============================================================================
+
+Docker Compose Options (project and Override)
+
+
+ pwd
+/home/dc-user/docker-for-java/chapter3/helloweb
+
+docker-compose up -d
+Creating network "helloweb_default" with the default driver
+Creating helloweb_web_1 ... done
+
+
+ docker-compose down
+Stopping helloweb_web_1 ... done
+Removing helloweb_web_1 ... done
+Removing network helloweb_default
+
+
+docker-compose -p myapp up -d
+Creating network "myapp_default" with the default driver
+Building web
+Step 1/2 : FROM jboss/wildfly
+ ---> 5b9bb796f7d7
+Step 2/2 : ADD webapp.war /opt/jboss/wildfly/standalone/deployments/
+ ---> Using cache
+ ---> 1038b491b227
+Successfully built 1038b491b227
+Successfully tagged myapp_web:latest
+WARNING: Image for service web was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Creating myapp_web_1 ... done
+
+
+docker-compose -p myapp ps
+   Name                  Command               State           Ports
+-----------------------------------------------------------------------------
+myapp_web_1   /opt/jboss/wildfly/bin/sta ...   Up      0.0.0.0:8080->8080/tcp
+
+
+docker-compose -p myapp down
+Stopping myapp_web_1 ... done
+Removing myapp_web_1 ... done
+Removing network myapp_default
+
+
+Create Override file
+
+ more docker-compose.override.yml
+version: "3"
+services:
+  web:
+   ports:
+     - 80:8080
+
+docker-compose up -d
+Creating network "helloweb_default" with the default driver
+Creating helloweb_web_1 ... done
+
+
+docker-compose ps
+     Name                   Command               State                      Ports
+-----------------------------------------------------------------------------------------------------
+helloweb_web_1   /opt/jboss/wildfly/bin/sta ...   Up      0.0.0.0:80->8080/tcp,0.0.0.0:8080->8080/tcp
+
+
+ls ~/deployments/
+webapp.war
+
+
+docker-compose logs -f
+
+
+curl http://localhost/webapp/resources/persons
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Penny</name></person><person><name>Leonard</name></person><person><name>Sheldon</name></person><person><name>Amy</name></person><person><name>Howard</name></person><person><name>Bernadette</name></person><person><name>Raj</name></person><person><name>Priya</name></person></collection>
+
+docker-compose down
+Stopping helloweb_web_1 ... done
+Removing helloweb_web_1 ... done
+Removing network helloweb_default
+
+=========================================================================================
+
+Docker Compose Options (multiple files)
+
+- Multiple files using -f 
+  Replace or extends the parent value
+- Extending services
+  Use extends
+  
+=============================================
+
+Introduction to swarm mode
+
+- new in 1.12
+- Natively managing the a cluster of Docker engine called Swarm
+- Docker CLI to create a swarm, deploy apps, and manage the swarm Optional features, need to be explicitly enabled
+- No Single point of failure (SPOF)
+- Declarative state model
+- Self-organizing and self healing
+- service discovery, load balancing and scaling
+- Rolling updates
+
+
+docker swarm --help
+
+Usage:  docker swarm COMMAND
+
+Manage Swarm
+
+Options:
+      --help   Print usage
+
+Commands:
+  init        Initialize a swarm
+  join        Join a swarm as a node and/or manager
+  join-token  Manage join tokens
+  leave       Leave the swarm
+  unlock      Unlock swarm
+  unlock-key  Manage the unlock key
+  update      Update the swarm
+
+Run 'docker swarm COMMAND --help' for more information on a command.
+
+docker swarm init
+Swarm initialized: current node (7cusqpx2sois2ga7r1rjzscgd) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-1np6kabdtvjaxnwv5kuukydforg4jyan756xhvlvtwz4etdelx-4ly0p4isjon6d26aycjrp7i6f \
+    10.168.141.180:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+
+==========================================================
+
+create a database cluster using Docker Service
+
+docker swarm init
+Swarm initialized: current node (pzve3la5gkknppoy1x3n86pxc) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-0gzu1ajydd98jkf83npmvc6ova4eokim72n2d05hk6gje31fsj-5khrwa8maynsjf2ldfjlxuxfq \
+    10.168.141.180:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+docker network create -d overlay couchbase
+3f2se2u6plntw2dugmxu53sqc
+
+docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+19f19563a80e        bridge              bridge              local
+3f2se2u6plnt        couchbase           overlay             swarm
+23c1d21b2e9c        docker_gwbridge     bridge              local
+cdf2e62286be        host                host                local
+sq09fbwunlbw        ingress             overlay             swarm
+3c8ac3ebedb2        none                null                local
+
+docker service create --name couchbase-master --replicas 1 --network couchbase -p 8091:8091 -e TYPE=MASTER arungupta/couchbase
+yqrm2v9f6h5r8mdwpw0ivzzet
+Since --detach=false was not specified, tasks will be created in the background.
+In a future release, --detach=false will become the default.
+
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                        PORTS
+yqrm2v9f6h5r        couchbase-master    replicated          1/1                 arungupta/couchbase:latest   *:8091->8091/tcp
+
+
+docker service logs couchbase-master -f
+
+http://ech-10-168-141-180:8091/ui/index.html#/
+username/password = Administrator/password
+
+
+docker service create --name couchbase-worker --replicas 1 --network couchbase -e TYPE=WORKER -e COUCHBASE_MASTER=couchbase-master.couchbase -e AUTO_REBALANCE=false arungupta/couchbase
+w2vl38c7yopov9nf31arj535d
+Since --detach=false was not specified, tasks will be created in the background.
+In a future release, --detach=false will become the default.
+
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                        PORTS
+w2vl38c7yopo        couchbase-worker    replicated          1/1                 arungupta/couchbase:latest
+yqrm2v9f6h5r        couchbase-master    replicated          1/1                 arungupta/couchbase:latest   *:8091->8091/tcp
+
+docker service logs couchbase-worker -f
+
+
+docker service scale couchbase-worker=2
+couchbase-worker scaled to 2
+
+ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                        PORTS
+w2vl38c7yopo        couchbase-worker    replicated          2/2                 arungupta/couchbase:latest
+yqrm2v9f6h5r        couchbase-master    replicated          1/1                 arungupta/couchbase:latest   *:8091->8091/tcp
+
+docker service rm couchbase-worker couchbase-master
+couchbase-worker
+couchbase-master
+
+docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+
+docker network rm couchbase
+couchbase
+
+ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+19f19563a80e        bridge              bridge              local
+23c1d21b2e9c        docker_gwbridge     bridge              local
+cdf2e62286be        host                host                local
+sq09fbwunlbw        ingress             overlay             swarm
+3c8ac3ebedb2        none                null                local
+
+====================================================================================================
+
+Persistent Container Practice
+
+docker container run -d --name db arungupta/couchbase
+Unable to find image 'arungupta/couchbase:latest' locally
+latest: Pulling from arungupta/couchbase
+Digest: sha256:774769049abccba8e9670b31d4d55dfb1688229f9bc56d423175a90528456cf8
+Status: Downloaded newer image for arungupta/couchbase:latest
+cd86ab06ea1ef70d71af556392d0e70f9127772714094c59e750fd9ea2902315
+
+
+docker container inspect db
+
+docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh
+Unable to find image 'debian:latest' locally
+latest: Pulling from library/debian
+741437d97401: Pull complete
+Digest: sha256:066051f6674f6a3293bbd5a190081b1ae7fcae655a3884db59ebb3a2831da623
+Status: Downloaded newer image for debian:latest
+
+
+ls -l /docker/data/volumes
+total 24
+drwxr-xr-x 3 root root    19 Feb 19 05:17 0704fa6e50325324328d6f07633015472dea2f52fcbdce6a36e370f1bc4acf67
+drwxr-xr-x 3 root root    19 Feb 19 06:07 3397349bb7165a6cd35b158b675f8f2180e40ba34c1619294e2f74dd3ca97928
+drwxr-xr-x 3 root root    19 Feb 20 02:13 52339a54688590dc4dca1e934bfe29811e9e8c374523167d33a5704901fa4991
+-rw------- 1 root root 32768 Feb 20 02:13 metadata.db
+
+
+This is output from brew commands which doesn't works
+ "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "52339a54688590dc4dca1e934bfe29811e9e8c374523167d33a5704901fa4991",
+                "Source": "/docker/data/volumes/52339a54688590dc4dca1e934bfe29811e9e8c374523167d33a5704901fa4991/_data",
+                "Destination": "/opt/couchbase/var",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+
+ls -l /docker/data/volumes/52339a54688590dc4dca1e934bfe29811e9e8c374523167d33a5704901fa4991/_data
+total 0
+drwxr-xr-x 4 1000 1000 35 Feb 20 02:13 lib
+
+
+docker stop db
+db
+
+docker rm -v db
+db
+
+docker volume create my_couchbase
+my_couchbase
+
+docker volume ls
+DRIVER              VOLUME NAME
+local               0704fa6e50325324328d6f07633015472dea2f52fcbdce6a36e370f1bc4acf67
+local               3397349bb7165a6cd35b158b675f8f2180e40ba34c1619294e2f74dd3ca97928
+local               my_couchbase
+
+
+docker container run -d --name db -v my_couchbase:/opt/couchbase/var arungupta/couchbase
+08c61a02365f883937f475356c723c0b2c371f529c8d3735f488a4083409a124
+
+docker container rm -fv db
+db
+
+ docker volume ls
+DRIVER              VOLUME NAME
+local               0704fa6e50325324328d6f07633015472dea2f52fcbdce6a36e370f1bc4acf67
+local               3397349bb7165a6cd35b158b675f8f2180e40ba34c1619294e2f74dd3ca97928
+local               my_couchbase
+
+
+docker volume rm my_couchbase
+my_couchbase
+
+
+docker container run -d --name db -v my_couchbase:/opt/couchbase/var arungupta/couchbase
+66399dc65702ae508d1cd80a096bd31e314bc9f9c20e4277f5c222397f37506e
+
+
+docker container inspect db
+
+"Mounts": [
+		{
+			"Type": "volume",
+			"Name": "my_couchbase",
+			"Source": "/docker/data/volumes/my_couchbase/_data",
+			"Destination": "/opt/couchbase/var",
+			"Driver": "local",
+			"Mode": "z",
+			"RW": true,
+			"Propagation": ""
+		}
+	],
+
+docker container rm -fv db
+db
+
+docker volume ls
+DRIVER              VOLUME NAME
+local               0704fa6e50325324328d6f07633015472dea2f52fcbdce6a36e370f1bc4acf67
+local               3397349bb7165a6cd35b158b675f8f2180e40ba34c1619294e2f74dd3ca97928
+local               my_couchbase
+
+docker volume rm my_couchbase
+my_couchbase
+
+
+pwd
+/home/dc-user/docker-for-java/chapter5
+
+mkdir couchbase
+cd couchbase/
+
+ docker container run -d --name db -v `pwd`:/opt/couchbase/var -p 8091:8091 arungupta/couchbase
+796075a768c42505b38efa86308a8f500107735957189d0fdbfbd4cf154eab44
+
+@@@### Although we removed or stop the container still we can get the data volume mapping
+
+docker container stop db
+db
+
+docker container rm db
+db
+
+docker container run -d --name db -v `pwd`:/opt/couchbase/var -p 8091:8091 arungupta/couchbase
+91e8a842a7dd2e31a405aedfac2ecb75c75537eca4c04a70f7df63577b0b9c35
+
+Launch the http://ech-10-168-141-180:8091/ui/index.html#/ ==> You should be able to see the "Data Buckets" as is.
+
+=================================================================
+
+Docker Volume Plugins Practice
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================
+Anil Traders = Sunglasses
